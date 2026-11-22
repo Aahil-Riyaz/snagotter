@@ -37,6 +37,11 @@ class Settings:
     max_filesize_mb: int = 1024
     max_duration_s: int = 3 * 3600
     rate_per_minute: int = 20
+    # optional, for servers: a proxy for sites that refuse cloud addresses, and owner-provided cookies
+    proxy: str = ""
+    proxy_sites: list[str] = field(default_factory=lambda: ["youtube", "tiktok"])
+    cookies_file: str = ""
+    cookie_sites: list[str] = field(default_factory=lambda: ["instagram"])
 
     @property
     def local(self) -> bool:
@@ -69,6 +74,12 @@ class Settings:
         s.max_filesize_mb = int(env.get("YTDOWN_MAX_FILESIZE_MB", s.max_filesize_mb))
         s.max_duration_s = int(env.get("YTDOWN_MAX_DURATION_S", s.max_duration_s))
         s.rate_per_minute = int(env.get("YTDOWN_RATE_PER_MINUTE", s.rate_per_minute))
+        s.proxy = env.get("YTDOWN_PROXY", s.proxy).strip()
+        if env.get("YTDOWN_PROXY_SITES"):
+            s.proxy_sites = [x.strip().lower() for x in env["YTDOWN_PROXY_SITES"].split(",") if x.strip()]
+        s.cookies_file = env.get("YTDOWN_COOKIES_FILE", s.cookies_file)
+        if env.get("YTDOWN_COOKIE_SITES"):
+            s.cookie_sites = [x.strip().lower() for x in env["YTDOWN_COOKIE_SITES"].split(",") if x.strip()]
         Path(s.temp_dir).mkdir(parents=True, exist_ok=True)
         return s
 

@@ -91,6 +91,7 @@ def to_payload(code: str, details: str | None = None) -> dict:
     clean = _ANSI.sub("", details or "").strip() or None
     if clean:
         clean = re.sub(r"(cookie|authorization|token)[=:]\s*\S+", r"\1=[hidden]", clean, flags=re.I)
+        clean = re.sub(r"(\w+://)[^/\s:@]+:[^/\s@]+@", r"\1[hidden]@", clean)  # proxy credentials
     return {"code": code, "title": title, "hint": hint, "action": action, "action_label": label,
             "details": clean[:4000] if clean else None}
 

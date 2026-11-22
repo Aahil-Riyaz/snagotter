@@ -4,6 +4,7 @@ from __future__ import annotations
 import asyncio
 import os
 import shutil
+from urllib.parse import urlsplit
 import subprocess
 import threading
 import time
@@ -80,7 +81,16 @@ class _QuietLogger:
         self.last_error = msg
 
 
-def base_opts(settings: Settings, cookies: CookieStore, workdir: Path) -> dict:
+def _site_of(url: str) -> str:
+    host = (urlsplit(url).hostname or "").lower()
+    for site, marks in (("youtube", ("youtube.com", "youtu.be")), ("tiktok", ("tiktok.com",)),
+                        ("instagram", ("instagram.com",)), ("x", ("x.com", "twitter.com"))):
+        if any(host == m or host.endswith("." + m) for m in marks):
+            return site
+    return "other"
+
+
+def base_opts(settings: Settings, cookies: CookieStore, workdir: Path, url: str = "") -> dict:
     opts: dict = {
         "quiet": True,
         "no_warnings": True,
@@ -97,10 +107,20 @@ def base_opts(settings: Settings, cookies: CookieStore, workdir: Path) -> dict:
     loc = doctor.ffmpeg_location()
     if loc:
         opts["ffmpeg_location"] = loc
+    site = _site_of(url)
+    if settings.proxy and ("all" in settings.proxy_sites or site in settings.proxy_sites):
+        opts["proxy"] = settings.proxy
     if settings.local:
         cookies.apply(opts, workdir)
     else:
         opts["allowed_extractors"] = ["default", "-generic"]
+        # A server owner can give the engine one account's cookies (for example a spare Instagram
+        # account, so Stories work). They're copied per job because yt-dlp rewrites the file.
+        src = Path(settings.cookies_file) if settings.cookies_file else None
+        if src and src.is_file() and ("all" in settings.cookie_sites or site in settings.cookie_sites):
+            dst = workdir / "cookies.txt"
+            shutil.copyfile(src, dst)
+            opts["cookiefile"] = str(dst)
     return opts
 
 
@@ -271,7 +291,7 @@ class JobManager:
 
     def _ydl_opts(self, job: Job) -> dict:
         s = self.settings
-        opts = base_opts(s, self.cookies, job.dir)
+        opts = base_opts(s, self.cookies, job.dir, job.url)
         p = job.plan
         opts.update({
             "format": p.format,

@@ -185,7 +185,7 @@ def _extract(url: str) -> dict:
         url = urlunsplit((p.scheme, p.netloc, p.path.rstrip("/") + "/videos", p.query, ""))
     work = Path(tempfile.mkdtemp(prefix="info-", dir=settings.temp_dir))
     try:
-        opts = base_opts(settings, cookies, work)
+        opts = base_opts(settings, cookies, work, url)
         opts.update({
             "skip_download": True,
             "noplaylist": True,

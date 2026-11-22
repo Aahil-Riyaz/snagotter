@@ -11,7 +11,12 @@ CADDY_CONTAINER="${CADDY_CONTAINER:-n8n-caddy-1}"
 REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 export YTDOWN_DOMAIN
 
-printf 'YTDOWN_DOMAIN=%s\n' "$YTDOWN_DOMAIN" > "$REPO_DIR/deploy/.env"
+# Keep other settings (YTDOWN_PROXY, ...) and only set the domain.
+touch "$REPO_DIR/deploy/.env"; chmod 600 "$REPO_DIR/deploy/.env"
+mkdir -p "$REPO_DIR/deploy/secrets"; chmod 700 "$REPO_DIR/deploy/secrets"
+grep -v '^YTDOWN_DOMAIN=' "$REPO_DIR/deploy/.env" > "$REPO_DIR/deploy/.env.tmp" || true
+printf 'YTDOWN_DOMAIN=%s\n' "$YTDOWN_DOMAIN" >> "$REPO_DIR/deploy/.env.tmp"
+mv "$REPO_DIR/deploy/.env.tmp" "$REPO_DIR/deploy/.env"
 sudo docker compose -f "$REPO_DIR/deploy/compose.yml" --env-file "$REPO_DIR/deploy/.env" up -d --build
 
 if ! grep -q "^$YTDOWN_DOMAIN " "$CADDY_DIR/Caddyfile"; then

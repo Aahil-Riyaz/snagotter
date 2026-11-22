@@ -318,3 +318,23 @@ def test_server_blocked_only_in_hosted_mode():
     assert errors.from_exception(tt, hosted=True)["code"] == "server_blocked"
     assert errors.from_exception(tt)["code"] in ("unknown", "engine_outdated")
     assert errors.from_exception(RuntimeError("HTTP Error 404: Not Found"), hosted=True)["code"] == "unavailable"
+
+
+def test_proxy_and_server_cookies_apply_per_site(tmp_path, monkeypatch):
+    from ytdown_engine.jobs import CookieStore, base_opts
+    from ytdown_engine.settings import Settings
+    ck = tmp_path / "ig.txt"
+    ck.write_text("# Netscape HTTP Cookie File\n", encoding="utf-8")
+    s = Settings(mode="hosted", temp_dir=str(tmp_path), proxy="http://u:p@proxy.example:8080", cookies_file=str(ck))
+    yt = base_opts(s, CookieStore(), tmp_path, "https://www.youtube.com/watch?v=aqz-KE-bpKQ")
+    assert yt["proxy"] == s.proxy and "cookiefile" not in yt
+    ig = base_opts(s, CookieStore(), tmp_path, "https://www.instagram.com/stories/someone/123/")
+    assert "proxy" not in ig and ig["cookiefile"].endswith("cookies.txt")
+    x = base_opts(s, CookieStore(), tmp_path, "https://x.com/a/status/1")
+    assert "proxy" not in x and "cookiefile" not in x
+
+
+def test_proxy_password_hidden_in_errors():
+    from ytdown_engine import errors
+    p = errors.to_payload("network", "Unable to connect to proxy http://user:secret@1.2.3.4:8080")
+    assert "secret" not in p["details"] and "[hidden]@" in p["details"]

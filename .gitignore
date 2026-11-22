@@ -10,3 +10,4 @@ cookies.txt
 .env
 .vercel
 deploy/.env
+deploy/secrets/
