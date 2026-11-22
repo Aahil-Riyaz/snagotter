@@ -103,6 +103,27 @@ const PERKS = [
   { icon: ShieldCheck, t: "No ads, no sign-up", d: "Nothing to install. Links aren't logged and files are deleted." },
 ];
 
+/** The demo only downloads and plays while it's on screen, so it never slows down the first load. */
+function DemoVideo() {
+  const ref = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    const v = ref.current;
+    if (!v || !("IntersectionObserver" in window)) return;
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) {
+        if (!v.src) v.src = "/brand/demo.mp4?v=2";
+        if (!reduced()) v.play().catch(() => {});
+      } else v.pause();
+    }, { rootMargin: "200px 0px" });
+    io.observe(v);
+    return () => io.disconnect();
+  }, []);
+  return (
+    <video ref={ref} poster="/brand/demo.webp?v=2" muted loop playsInline preload="none"
+      width={540} height={1168} aria-label="SnagOtter saving a YouTube video on a phone" />
+  );
+}
+
 export function HomeSections() {
   const ref = useReveal();
   return (
@@ -120,8 +141,7 @@ export function HomeSections() {
           </ol>
         </div>
         <figure className="demo-media reveal">
-          <video src="/brand/demo.mp4?v=2" poster="/brand/demo.jpg?v=2" autoPlay muted loop playsInline preload="metadata"
-            width={540} height={1168} aria-label="SnagOtter saving an Instagram Reel on a phone" />
+          <DemoVideo />
         </figure>
       </section>
 

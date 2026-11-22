@@ -84,10 +84,10 @@ function sitePage(p: Page): string {
 <style>${PAGE_CSS}</style>
 ${data.map(ld).join("\n")}
 </head><body><div class="wrap">
-<header><a class="mark" href="/"><img src="/brand/otter-3d.png" alt="" width="32" height="32">${esc(geo.name)}</a><a href="/">Open the downloader</a></header>
+<header><a class="mark" href="/"><img src="/brand/otter-3d.webp" alt="" width="32" height="32">${esc(geo.name)}</a><a href="/">Open the downloader</a></header>
 <main>
 <div class="hero"><div><h1>${esc(p.h1)}</h1>
-<p class="lede">${esc(p.lede)}</p></div><img src="/brand/otter-3d.png" alt="" width="132" height="132"></div>
+<p class="lede">${esc(p.lede)}</p></div><img src="/brand/otter-3d.webp" alt="" width="132" height="132"></div>
 <a class="cta" href="/">Download from ${esc(p.site)}</a>
 <h2>How to download from ${esc(p.site)}</h2>
 <ol>${steps.map((s) => `<li>${esc(s)}</li>`).join("")}</ol>

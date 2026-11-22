@@ -11,7 +11,7 @@ export default defineConfig({
     geoPlugin(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["icon.svg", "apple-touch-icon.png"],
+      includeAssets: ["apple-touch-icon.png"],
       manifest: {
         name: "SnagOtter",
         short_name: "SnagOtter",
@@ -36,7 +36,7 @@ export default defineConfig({
       workbox: {
         navigateFallback: "/index.html",
         navigateFallbackDenylist: [/^\/api\//, /^\/(llms\.txt|sitemap\.xml|robots\.txt)$/, ...GEO_SLUGS.map((s) => new RegExp(`^/${s}/?$`))],
-        globPatterns: ["**/*.{js,css,html,svg,png,woff2}"],
+        globPatterns: ["**/*.{js,css,html}", "assets/*-latin-*.woff2", "brand/otter-3d.webp", "icon-192.png", "apple-touch-icon.png"],
         runtimeCaching: [],
       },
     }),

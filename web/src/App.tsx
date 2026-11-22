@@ -5,6 +5,7 @@ import { PLATFORM_NAME, cx, detect, duration, isIOS, splitLinks } from "./lib/ut
 import { AboutDialog, Banner, ConnectEngine, Footer, SettingsDialog, TopBar } from "./components/Chrome";
 import { CookiesDialog, ErrorBlock } from "./components/Feedback";
 import { HeroArt, HeroHead, HomeSections, SiteRow } from "./components/Home";
+import { PullRefresh } from "./components/PullRefresh";
 import { JobFocus, Queue, Recent, type JobMeta } from "./components/Jobs";
 import { LinkSlot } from "./components/Link";
 import { ListPicker, MediaHeader, PlaylistChoice, Skeleton, type ListQuality } from "./components/Media";
@@ -371,6 +372,7 @@ export default function App() {
   return (
     <>
       <a className="skip" href="#link">Skip to the link box</a>
+      <PullRefresh />
       <TopBar doctor={doctor} offline={engine === "offline"} onSettings={() => setDialog("settings")} />
       <Banner doctor={doctor} online={online} onUpdated={(d) => { setDoctor(d); setEngine(d ? "ok" : "offline"); }} />
       <main className={cx(showSummary && "has-sticky", home && "is-home")}>

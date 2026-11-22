@@ -2,7 +2,7 @@ import { siFacebook, siInstagram, siTiktok, siX, siYoutube } from "simple-icons"
 import type { Platform } from "../lib/api";
 
 /** Mascot: Microsoft Fluent Emoji "Otter" (3D), MIT licence. */
-export const OTTER_SRC = "/brand/otter-3d.png";
+export const OTTER_SRC = "/brand/otter-3d.webp";
 
 export function Logo() {
   return (

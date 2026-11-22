@@ -179,3 +179,45 @@
   .is-home .rail{margin-top:0}
   .demo{padding-top:var(--s-8)}
 }
+
+/* ---------- pull to refresh (touch screens) ---------- */
+@media (pointer:coarse){html,body{overscroll-behavior-y:none}}
+.ptr{position:fixed;left:0;right:0;top:-150px;height:150px;display:flex;flex-direction:row;align-items:flex-end;justify-content:center;gap:10px;padding-bottom:22px;pointer-events:none;--pull:0}
+.skip:not(:focus){visibility:hidden}
+.ptr img{width:38px;height:38px;transform:rotate(calc(var(--pull) * -220deg)) scale(calc(.55 + var(--pull) * .45));filter:drop-shadow(0 6px 8px rgba(70,35,0,.25))}
+.ptr-word{display:flex;font-weight:800;font-size:22px;line-height:38px;letter-spacing:-.03em;color:var(--ink)}
+.ptr-word span{opacity:calc(var(--pull) * 11 - var(--i) * 1.05);transform:translateY(calc((1 - var(--pull)) * 8px))}
+.ptr.ready img{animation:ptr-bounce .5s var(--ease-out)}
+.ptr.refreshing img{animation:ptr-spin .7s linear infinite}
+.ptr.refreshing .ptr-word span{opacity:1;animation:ptr-wave .9s ease-in-out infinite;animation-delay:calc(var(--i) * 60ms)}
+@keyframes ptr-bounce{40%{transform:scale(1.18) rotate(-200deg)}100%{transform:scale(1) rotate(-220deg)}}
+@keyframes ptr-spin{to{transform:rotate(-580deg)}}
+@keyframes ptr-wave{0%,100%{transform:none}35%{transform:translateY(-6px);color:var(--accent-ink)}}
+
+/* ---------- scroll-linked animations (browsers that support them; others keep the fade-in reveal) ---------- */
+@media (prefers-reduced-motion:no-preference){
+  html{scroll-behavior:smooth}
+  @supports (animation-timeline: view()){
+    .top{animation:head-solid linear both;animation-timeline:scroll(root);animation-range:0 120px}
+    @keyframes head-solid{to{box-shadow:0 8px 24px -16px rgba(18,20,26,.35);border-bottom-color:transparent}}
+    .hero-art,.hero-mini{animation:otter-drift linear both;animation-timeline:scroll(root);animation-range:0 600px}
+    @keyframes otter-drift{to{translate:0 -36px;rotate:-4deg}}
+
+    .home .reveal{opacity:1;transform:none;transition:none}
+    .home h2.reveal,.home .demo-copy,.home .faq-side,.home .faq-sec>div:last-child{animation:rise linear both;animation-timeline:view();animation-range:entry 0% cover 28%}
+    @keyframes rise{from{opacity:0;translate:0 36px}to{opacity:1;translate:0 0}}
+    .demo-steps li{animation:rise linear both;animation-timeline:view();animation-range:entry 0% cover 22%}
+
+    .demo-media video{animation:phone-in linear both;animation-timeline:view();animation-range:entry 0% cover 40%}
+    @keyframes phone-in{from{opacity:.2;transform:perspective(900px) rotateX(22deg) scale(.86) translateY(60px)}to{opacity:1;transform:none}}
+
+    .tile{animation:tile-in linear both;animation-timeline:view();animation-range:entry 0% cover 30%}
+    .tile:nth-child(2),.tile:nth-child(4){animation-range:entry 8% cover 34%}
+    .tile:nth-child(3),.tile:nth-child(5){animation-range:entry 14% cover 38%}
+    @keyframes tile-in{from{opacity:0;scale:.9;translate:0 48px}to{opacity:1;scale:1;translate:0 0}}
+
+    .perk-list li{animation:rise linear both;animation-timeline:view();animation-range:entry 0% cover 25%}
+    .perk-ic{animation:pop linear both;animation-timeline:view();animation-range:entry 10% cover 30%}
+    @keyframes pop{from{scale:.4;opacity:0}70%{scale:1.12}to{scale:1;opacity:1}}
+  }
+}
