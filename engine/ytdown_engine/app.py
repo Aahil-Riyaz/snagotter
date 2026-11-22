@@ -71,7 +71,7 @@ class Guard(BaseHTTPMiddleware):
         return response
 
 
-app.add_middleware(CORSMiddleware, allow_origins=settings.origins, allow_credentials=False,
+app.add_middleware(CORSMiddleware, allow_origins=settings.origins, allow_credentials=False, allow_private_network=True,
                    allow_methods=["GET", "POST", "PUT", "DELETE"], allow_headers=["content-type"],
                    expose_headers=["content-disposition"], max_age=600)
 app.add_middleware(Guard)

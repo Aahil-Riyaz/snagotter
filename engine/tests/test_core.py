@@ -294,3 +294,16 @@ def test_x_hls_audio_without_codec_counts_as_aac():
 
 def test_no_audio_error():
     assert errors.classify("ERROR: Postprocessing: WARNING: unable to obtain file audio codec with ffprobe") == "no_audio"
+
+
+def test_private_network_preflight_allowed_only_for_known_origins():
+    from fastapi.testclient import TestClient
+    from ytdown_engine.app import app
+    c = TestClient(app, base_url="http://127.0.0.1:8787")
+    hdrs = {"Access-Control-Request-Method": "POST", "Access-Control-Request-Private-Network": "true"}
+    ok = c.options("/api/info", headers={**hdrs, "Origin": "https://ytdown-beta.vercel.app"})
+    assert ok.status_code == 200
+    assert ok.headers.get("access-control-allow-private-network") == "true"
+    bad = c.options("/api/info", headers={**hdrs, "Origin": "https://ytdown.vercel.app"})
+    assert bad.status_code == 400
+    assert "access-control-allow-origin" not in bad.headers
