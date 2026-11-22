@@ -40,6 +40,8 @@ class Settings:
     # optional, for servers: a proxy for sites that refuse cloud addresses, and owner-provided cookies
     proxy: str = ""
     proxy_sites: list[str] = field(default_factory=lambda: ["youtube", "tiktok"])
+    # per-site proxies, e.g. {"youtube": "socks5://warp:1080", "tiktok": "socks5://tor:9050"}; wins over proxy
+    proxy_map: dict[str, str] = field(default_factory=dict)
     cookies_file: str = ""
     cookie_sites: list[str] = field(default_factory=lambda: ["instagram"])
 
@@ -75,6 +77,10 @@ class Settings:
         s.max_duration_s = int(env.get("YTDOWN_MAX_DURATION_S", s.max_duration_s))
         s.rate_per_minute = int(env.get("YTDOWN_RATE_PER_MINUTE", s.rate_per_minute))
         s.proxy = env.get("YTDOWN_PROXY", s.proxy).strip()
+        for pair in (env.get("YTDOWN_PROXY_MAP") or "").split(","):
+            site, _, proxy = pair.partition("=")
+            if site.strip() and proxy.strip():
+                s.proxy_map[site.strip().lower()] = proxy.strip()
         if env.get("YTDOWN_PROXY_SITES"):
             s.proxy_sites = [x.strip().lower() for x in env["YTDOWN_PROXY_SITES"].split(",") if x.strip()]
         s.cookies_file = env.get("YTDOWN_COOKIES_FILE", s.cookies_file)

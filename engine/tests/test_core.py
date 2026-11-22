@@ -378,3 +378,15 @@ def test_facebook_bare_formats_become_hd_and_sd():
     assert [g["label"] for g in m["video"]] == ["HD", "SD"]
     v = m["video"][0]["variants"][0]
     assert v["muxed"] and v["codec"] == "Original" and v["container"] == "mp4"
+
+
+def test_proxy_map_per_site(tmp_path, monkeypatch):
+    from ytdown_engine.jobs import CookieStore, base_opts
+    from ytdown_engine.settings import Settings
+    monkeypatch.setenv("YTDOWN_PROXY_MAP", "youtube=socks5://warp:1080, tiktok=socks5://tor:9050")
+    monkeypatch.setenv("YTDOWN_TEMP", str(tmp_path))
+    s = Settings.load()
+    s.mode = "hosted"
+    assert base_opts(s, CookieStore(), tmp_path, "https://youtu.be/x")["proxy"] == "socks5://warp:1080"
+    assert base_opts(s, CookieStore(), tmp_path, "https://www.tiktok.com/@a/video/1")["proxy"] == "socks5://tor:9050"
+    assert "proxy" not in base_opts(s, CookieStore(), tmp_path, "https://x.com/a/status/1")

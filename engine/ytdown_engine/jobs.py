@@ -117,7 +117,9 @@ def base_opts(settings: Settings, cookies: CookieStore, workdir: Path, url: str 
     if loc:
         opts["ffmpeg_location"] = loc
     site = _site_of(url)
-    if settings.proxy and ("all" in settings.proxy_sites or site in settings.proxy_sites):
+    if site in settings.proxy_map:
+        opts["proxy"] = settings.proxy_map[site]
+    elif settings.proxy and ("all" in settings.proxy_sites or site in settings.proxy_sites):
         opts["proxy"] = settings.proxy
     if settings.local:
         cookies.apply(opts, workdir)

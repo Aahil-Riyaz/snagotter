@@ -19,9 +19,11 @@ services:
       YTDOWN_MAX_TEMP_GB: "20"
       YTDOWN_MAX_FILESIZE_MB: "2048"
       YTDOWN_RATE_PER_MINUTE: "20"
-      # YouTube refuses cloud addresses, so it goes through Cloudflare WARP (free, the warp service below).
-      # Override in deploy/.env to use another proxy, or set YTDOWN_PROXY= to turn it off.
-      YTDOWN_PROXY: ${YTDOWN_PROXY-socks5://ytdown-warp:1080}
+      # YouTube refuses cloud addresses, so it goes through Cloudflare WARP (free). TikTok is banned in
+      # India, where this server is, so it leaves through Tor exits in other countries (free).
+      # Override in deploy/.env; an empty YTDOWN_PROXY_MAP= sends everything direct.
+      YTDOWN_PROXY_MAP: ${YTDOWN_PROXY_MAP-youtube=socks5://ytdown-warp:1080,tiktok=socks5://ytdown-tor:9050}
+      YTDOWN_PROXY: ${YTDOWN_PROXY:-}
       YTDOWN_PROXY_SITES: ${YTDOWN_PROXY_SITES:-youtube}
       # Optional: deploy/secrets/cookies.txt from a spare account, used only for these sites.
       YTDOWN_COOKIES_FILE: /run/ytdown-secrets/cookies.txt
@@ -30,7 +32,7 @@ services:
       - ytdown_tmp:/tmp/ytdown      # on disk, not RAM, so other services keep their memory
       - ./secrets:/run/ytdown-secrets:ro
     mem_limit: 1536m
-    depends_on: [warp]
+    depends_on: [warp, tor]
     networks: [proxy]
 
   warp:
@@ -46,6 +48,17 @@ services:
     mem_limit: 256m
     networks: [proxy]
 
+  tor:
+    # Tor client from Debian's package, SOCKS only on the Docker network (no relay, no exit).
+    build: ./tor
+    image: ytdown-tor:latest
+    container_name: ytdown-tor
+    restart: unless-stopped
+    volumes:
+      - tor_data:/var/lib/tor
+    mem_limit: 256m
+    networks: [proxy]
+
 networks:
   proxy:
     external: true
@@ -53,3 +66,4 @@ networks:
 volumes:
   ytdown_tmp:
   warp_data:
+  tor_data:

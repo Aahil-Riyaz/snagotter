@@ -1,0 +1,12 @@
+# Only reachable on the Docker network; no relay, no exit, no hidden services.
+SocksPort 0.0.0.0:9050
+SocksPolicy accept 127.0.0.1
+SocksPolicy accept 172.16.0.0/12
+SocksPolicy accept 10.0.0.0/8
+SocksPolicy reject *
+DataDirectory /var/lib/tor
+Log notice stdout
+# Leave from countries where TikTok isn't banned.
+ExitNodes {us},{ca},{gb},{de},{nl},{fr},{se},{ch},{jp},{sg},{au}
+StrictNodes 1
+CircuitBuildTimeout 30
