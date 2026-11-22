@@ -10,7 +10,7 @@ from pathlib import Path
 DEFAULT_ORIGINS = [
     "http://127.0.0.1:8787", "http://localhost:8787",
     "http://127.0.0.1:5173", "http://localhost:5173",
-    "https://ytdown.vercel.app",
+    "https://ytdown-beta.vercel.app",
 ]
 
 

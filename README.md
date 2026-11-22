@@ -1,5 +1,7 @@
 # ytdown
 
+**Live app:** https://ytdown-beta.vercel.app (needs the engine running on your computer, see below)
+
 Paste a link, see the media, pick exactly the format you want, download it. YouTube, Instagram, TikTok, X and most other sites [yt-dlp](https://github.com/yt-dlp/yt-dlp) supports. No accounts, no ads, no tracking.
 
 ytdown is **local-first**. The download engine runs on your own computer, so sites see a normal home connection, and your links and files never pass through anyone else's server. The app is an installable web app (PWA). You can use it straight from the engine, or host it on Vercel and point it at your engine.
@@ -60,7 +62,7 @@ The engine can't run on Vercel itself, for three reasons:
 3. Optional environment variables:
    - `VITE_ENGINE_URL`: where the app looks for the engine (default `http://127.0.0.1:8787`).
    - `VITE_REPO_URL`: shows a GitHub link in the footer.
-4. Allow your Vercel address on the engine. `https://ytdown.vercel.app` is allowed out of the box. For any other address, start the engine with:
+4. Allow your Vercel address on the engine. The public deployment, `https://ytdown-beta.vercel.app`, is allowed out of the box. For your own deployment, start the engine with:
    ```powershell
    $env:YTDOWN_ORIGINS = "https://your-app.vercel.app,http://127.0.0.1:8787,http://localhost:8787"; .\start.ps1
    ```
