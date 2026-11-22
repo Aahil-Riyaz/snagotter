@@ -4,6 +4,7 @@ import { prefs, recent, type RecentItem } from "./lib/store";
 import { PLATFORM_NAME, cx, detect, duration, isIOS, splitLinks } from "./lib/util";
 import { AboutDialog, Banner, ConnectEngine, Footer, SettingsDialog, TopBar } from "./components/Chrome";
 import { CookiesDialog, ErrorBlock } from "./components/Feedback";
+import { Faq } from "./components/Faq";
 import { Handles, JobFocus, Queue, Recent, type JobMeta } from "./components/Jobs";
 import { LinkSlot } from "./components/Link";
 import { ListPicker, MediaHeader, PlaylistChoice, Skeleton, type ListQuality } from "./components/Media";
@@ -396,7 +397,7 @@ export default function App() {
           <aside className="rail" aria-label="Downloads">
             {showSummary && <Summary r={resolved!} onDownload={download} busy={starting} local={local} />}
             <Queue jobs={jobList} focus={focus} onFocus={setFocus} />
-            {!showSummary && view.k !== "list" && !focused && jobList.length === 0 && <Handles />}
+            {!showSummary && view.k !== "list" && !focused && jobList.length === 0 && <><Handles /><Faq /></>}
             {!showSummary && <Recent items={recentItems} onClear={() => setRecent(recent.clear())} onOpen={(u) => { setText(u); fetchInfo(u); }} />}
           </aside>
         </div>

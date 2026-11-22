@@ -1,12 +1,14 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
+import { GEO_SLUGS, geoPlugin } from "./geo";
 
 const ENGINE = process.env.YTDOWN_ENGINE ?? "http://127.0.0.1:8787";
 
 export default defineConfig({
   plugins: [
     react(),
+    geoPlugin(),
     VitePWA({
       registerType: "autoUpdate",
       includeAssets: ["icon.svg", "apple-touch-icon.png"],
@@ -33,7 +35,7 @@ export default defineConfig({
       },
       workbox: {
         navigateFallback: "/index.html",
-        navigateFallbackDenylist: [/^\/api\//],
+        navigateFallbackDenylist: [/^\/api\//, /^\/(llms\.txt|sitemap\.xml|robots\.txt)$/, ...GEO_SLUGS.map((s) => new RegExp(`^/${s}/?$`))],
         globPatterns: ["**/*.{js,css,html,svg,png,woff2}"],
         runtimeCaching: [],
       },

@@ -1,0 +1,148 @@
+{
+  "site": "https://snagotter.vercel.app",
+  "name": "SnagOtter",
+  "author": "Aahil Riyaz Beekay",
+  "summary": "SnagOtter is a free online video and audio downloader for YouTube, Instagram, TikTok, Facebook and X (Twitter). Paste a link, pick the quality, and save the file. No sign-up, no ads, no watermark added, and it works on iPhone, Android and desktop.",
+  "faq": [
+    {
+      "q": "How do I download a video with SnagOtter?",
+      "a": "Copy the video's link from the app or website, paste it into SnagOtter and press Fetch. Pick a quality, or keep the suggested best one, then press Download. The file is saved to your device."
+    },
+    {
+      "q": "Is SnagOtter free?",
+      "a": "Yes. SnagOtter is completely free, with no account, no sign-up, no ads and no download limit beyond a fair-use rate limit."
+    },
+    {
+      "q": "Which sites does SnagOtter support?",
+      "a": "YouTube (videos, Shorts, playlists and music), Instagram (Reels, video posts and carousels), TikTok, Facebook (public videos and Reels) and X (Twitter) videos and GIFs, plus many other sites supported by the open-source yt-dlp project."
+    },
+    {
+      "q": "How do I save a video to Photos on iPhone?",
+      "a": "Open SnagOtter in Safari, paste the link and press Download. When the file is ready, tap Save to Photos, then choose Save Video in the share sheet. The video goes straight into the Photos app."
+    },
+    {
+      "q": "Will the video play on my phone?",
+      "a": "Yes. With Plays everywhere turned on, which is the default, SnagOtter delivers H.264 video with AAC audio in an MP4, the format every phone, TV and editor plays. If a site only offers VP9 or AV1, SnagOtter converts it for you."
+    },
+    {
+      "q": "Can I download only the audio, as MP3?",
+      "a": "Yes. Choose Audio only to save the original audio track, or convert it to MP3 (320, 192 or 128 kbps), M4A, Opus, FLAC or WAV. Title, artist and cover art are added to the file."
+    },
+    {
+      "q": "What is the highest quality I can download?",
+      "a": "Whatever the site offers. On YouTube that can be 4K or 8K and HDR when you turn off Plays everywhere. With it on, YouTube offers H.264 up to 1080p."
+    },
+    {
+      "q": "Does SnagOtter keep my videos or links?",
+      "a": "No. Links aren't logged, and downloaded files are deleted from the server within an hour, or a few minutes after you save them. There are no accounts and no tracking."
+    },
+    {
+      "q": "Can I download private videos or Instagram Stories?",
+      "a": "No. SnagOtter only downloads public content. Private videos, private accounts and Instagram Stories need a login, which the public site doesn't use."
+    },
+    {
+      "q": "Is it legal to download videos?",
+      "a": "Only download content you own or have the right to use, such as your own uploads, Creative Commons videos or content the creator allows you to save. Respect each site's terms and copyright law."
+    }
+  ],
+  "pages": [
+    {
+      "slug": "youtube-downloader",
+      "site": "YouTube",
+      "title": "YouTube Video Downloader: Free MP4 and MP3, up to 4K",
+      "h1": "Download YouTube videos, Shorts and playlists",
+      "description": "Free YouTube downloader. Save YouTube videos, Shorts and whole playlists as MP4 up to 4K, or as MP3 audio. No sign-up, no ads, works on iPhone and Android.",
+      "lede": "Paste a YouTube link to save the video as MP4, in any quality YouTube offers, or just the audio as MP3.",
+      "features": [
+        "Videos, Shorts, YouTube Music and finished live streams",
+        "Whole playlists: pick the videos you want",
+        "MP4 up to 1080p that plays everywhere, or 4K, 8K and HDR with Plays everywhere off",
+        "MP3, M4A, Opus, FLAC or WAV audio with title and cover art",
+        "Subtitles as .srt, the thumbnail, and trimming a section"
+      ],
+      "faq": [
+        {"q": "How do I download a YouTube video?", "a": "Copy the video link (Share, then Copy link), paste it into SnagOtter, press Fetch, pick a quality and press Download."},
+        {"q": "Can I download a whole YouTube playlist?", "a": "Yes. Paste the playlist link, choose the videos you want and one quality for all of them, and SnagOtter downloads them one after another."},
+        {"q": "How do I convert YouTube to MP3?", "a": "Paste the link, choose Audio only and pick MP3. SnagOtter saves the audio as MP3 with the title and cover art embedded."},
+        {"q": "Can I download YouTube Shorts?", "a": "Yes. Shorts links work like any other YouTube video."}
+      ]
+    },
+    {
+      "slug": "instagram-reel-downloader",
+      "site": "Instagram",
+      "title": "Instagram Reel Downloader: Save Reels and Videos in HD",
+      "h1": "Download Instagram Reels and video posts",
+      "description": "Free Instagram Reel downloader. Save Reels, video posts and carousel videos in HD as MP4, or as MP3 audio. Save to Photos on iPhone. No login, no ads.",
+      "lede": "Paste an Instagram Reel or post link to save the video in the best quality Instagram offers, ready to play on any phone.",
+      "features": [
+        "Reels, video posts and every video in a carousel",
+        "HD MP4 that plays on iPhone and Android",
+        "Save to Photos on iPhone with one tap",
+        "The audio alone as MP3 or M4A",
+        "No Instagram login needed for public posts"
+      ],
+      "faq": [
+        {"q": "How do I download an Instagram Reel?", "a": "In Instagram, tap Share and Copy link on the Reel, paste it into SnagOtter, press Fetch and then Download."},
+        {"q": "How do I save an Instagram Reel to my iPhone camera roll?", "a": "Open SnagOtter in Safari, paste the Reel link and press Download. When it's ready, tap Save to Photos and choose Save Video."},
+        {"q": "Can I download photos from Instagram?", "a": "No. SnagOtter saves video and audio. Photo-only posts aren't supported."},
+        {"q": "Can I download Instagram Stories?", "a": "No. Stories always need an Instagram login, which the public site doesn't use."}
+      ]
+    },
+    {
+      "slug": "tiktok-downloader",
+      "site": "TikTok",
+      "title": "TikTok Video Downloader: Save TikToks as MP4 or MP3",
+      "h1": "Download TikTok videos",
+      "description": "Free TikTok downloader. Save TikTok videos as MP4, without the watermark when TikTok offers a clean version, or save the sound as MP3. No app, no sign-up, no ads.",
+      "lede": "Paste a TikTok link to save the video as an MP4 that plays on any phone, or keep just the sound.",
+      "features": [
+        "TikTok videos and short vm.tiktok.com links",
+        "The version without the watermark when TikTok offers one",
+        "MP4 that plays on iPhone and Android",
+        "The sound alone as MP3",
+        "Works in the browser: nothing to install"
+      ],
+      "faq": [
+        {"q": "How do I download a TikTok video?", "a": "In TikTok, tap Share and Copy link, paste the link into SnagOtter, press Fetch and then Download."},
+        {"q": "Can I download TikTok without the watermark?", "a": "When TikTok offers a version without the watermark, SnagOtter lists it, and marks any version that has one."},
+        {"q": "Can I save just the sound from a TikTok?", "a": "Yes. Choose Audio only to save the sound, as MP3 or in its original format."}
+      ]
+    },
+    {
+      "slug": "facebook-video-downloader",
+      "site": "Facebook",
+      "title": "Facebook Video Downloader: Save Videos and Reels in HD",
+      "h1": "Download Facebook videos and Reels",
+      "description": "Free Facebook video downloader. Save public Facebook videos and Reels in HD or SD as MP4. Works with fb.watch links. No login, no ads.",
+      "lede": "Paste a public Facebook video or Reel link, including fb.watch links, and save it in HD or SD.",
+      "features": [
+        "Public Facebook videos and Reels",
+        "fb.watch, m.facebook.com and web.facebook.com links",
+        "HD and SD MP4 versions",
+        "The audio alone as MP3"
+      ],
+      "faq": [
+        {"q": "How do I download a Facebook video?", "a": "Tap Share and Copy link on the video, paste it into SnagOtter, press Fetch and then Download."},
+        {"q": "Can I download private Facebook videos?", "a": "No. SnagOtter only downloads public Facebook videos. Private videos and videos in private groups need a login."}
+      ]
+    },
+    {
+      "slug": "twitter-video-downloader",
+      "site": "X (Twitter)",
+      "title": "X (Twitter) Video Downloader: Save Videos and GIFs",
+      "h1": "Download videos and GIFs from X (Twitter)",
+      "description": "Free X and Twitter video downloader. Save videos and GIFs from X posts as MP4 or GIF, including posts with several videos. No login, no ads.",
+      "lede": "Paste an x.com or twitter.com post link to save its videos and GIFs.",
+      "features": [
+        "Videos and GIFs from x.com and twitter.com posts",
+        "Posts with several videos: pick the ones you want",
+        "Save a short clip as a real GIF",
+        "The audio alone as MP3"
+      ],
+      "faq": [
+        {"q": "How do I download a video from X (Twitter)?", "a": "Copy the post link, paste it into SnagOtter, press Fetch and then Download."},
+        {"q": "Can I save an X GIF as a GIF file?", "a": "Yes. X stores GIFs as short videos; under More options, SnagOtter can turn a short clip into a real GIF."}
+      ]
+    }
+  ]
+}

@@ -1,8 +1,0 @@
-# SnagOtter
-
-> A free video and audio downloader. Paste a link from YouTube, Instagram (Reels, posts), TikTok, Facebook, X or another site supported by yt-dlp, pick the quality, and save it. No sign-up, no ads, no tracking. Made by Aahil Riyaz Beekay.
-
-- App: https://snagotter.vercel.app/
-- Source: https://github.com/Aahil-Riyaz/snagotter
-- API: POST /api/info {url}, POST /api/jobs, GET /api/jobs/{id}/events (SSE), GET /api/jobs/{id}/file.
-- Only download content you have the right to use.

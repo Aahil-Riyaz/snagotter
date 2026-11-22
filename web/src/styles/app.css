@@ -345,3 +345,19 @@ footer .grow{flex:1}
 }
 .fpsm{display:none;color:var(--ink-2);font-weight:500;margin-left:calc(var(--s-2) * -1)}
 @media (display-mode:standalone){.top{position:sticky;top:0;z-index:6;background:var(--paper)}}
+
+/* FAQ (same text as the crawlable HTML, see geo.ts) */
+.faq{margin-top:var(--s-6)}
+.faq h2{margin-bottom:var(--s-3)}
+.faq-list{border-top:1px solid var(--line)}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{cursor:pointer;padding:var(--s-3) 0;font-size:var(--t-sm);line-height:var(--lh-sm);font-weight:500;list-style:none}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";float:right;color:var(--ink-3);font-family:var(--font-mono)}
+.faq details[open] summary::after{content:"−"}
+.faq summary:focus-visible{outline:2px solid var(--accent-mark);outline-offset:2px}
+.faq details p{margin:0 0 var(--s-3);font-size:var(--t-sm);line-height:var(--lh-sm);color:var(--ink-2)}
+.faq-links{font-size:var(--t-xs);line-height:var(--lh-xs);color:var(--ink-3);margin-top:var(--s-3)}
+.faq-links a{color:var(--ink-2)}
+/* crawler-readable HTML inside #root, replaced by the app on load */
+.geo-static{max-width:720px;margin:0 auto;padding:24px 20px;font-family:var(--font-ui);color:var(--ink)}
