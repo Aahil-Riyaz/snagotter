@@ -42,6 +42,8 @@ class Settings:
     proxy_sites: list[str] = field(default_factory=lambda: ["youtube", "tiktok"])
     # per-site proxies, e.g. {"youtube": "socks5://warp:1080", "tiktok": "socks5://tor:9050"}; wins over proxy
     proxy_map: dict[str, str] = field(default_factory=dict)
+    # sites whose proxy is Tor: each attempt takes a fresh circuit (exit), and failures are retried
+    rotate_sites: list[str] = field(default_factory=lambda: ["tiktok"])
     cookies_file: str = ""
     cookie_sites: list[str] = field(default_factory=lambda: ["instagram"])
 
@@ -83,6 +85,8 @@ class Settings:
                 s.proxy_map[site.strip().lower()] = proxy.strip()
         if env.get("YTDOWN_PROXY_SITES"):
             s.proxy_sites = [x.strip().lower() for x in env["YTDOWN_PROXY_SITES"].split(",") if x.strip()]
+        if env.get("YTDOWN_ROTATE_SITES") is not None:
+            s.rotate_sites = [x.strip().lower() for x in env["YTDOWN_ROTATE_SITES"].split(",") if x.strip()]
         s.cookies_file = env.get("YTDOWN_COOKIES_FILE", s.cookies_file)
         if env.get("YTDOWN_COOKIE_SITES"):
             s.cookie_sites = [x.strip().lower() for x in env["YTDOWN_COOKIE_SITES"].split(",") if x.strip()]

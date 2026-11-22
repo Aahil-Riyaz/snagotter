@@ -26,7 +26,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 from . import __version__, doctor, errors
 from .formats import BadRequest, build_media, drop_oversize
-from .jobs import TERMINAL, CookieStore, DiskFull, JobManager, base_opts
+from .jobs import TERMINAL, CookieStore, DiskFull, JobManager, attempts_for, base_opts
 from .names import content_disposition
 from .settings import Settings
 from .urls import (BlockedUrl, InvalidUrl, assert_public, detect_platform, normalize, split_batch,
@@ -185,16 +185,23 @@ def _extract(url: str) -> dict:
         url = urlunsplit((p.scheme, p.netloc, p.path.rstrip("/") + "/videos", p.query, ""))
     work = Path(tempfile.mkdtemp(prefix="info-", dir=settings.temp_dir))
     try:
-        opts = base_opts(settings, cookies, work, url)
-        opts.update({
-            "skip_download": True,
-            "noplaylist": True,
-            "playlistend": 500,
-            "extract_flat": "in_playlist" if platform in ("youtube", "other") else False,
-            "paths": {"home": str(work), "temp": str(work)},
-        })
-        with yt_dlp.YoutubeDL(opts) as ydl:
-            info = ydl.sanitize_info(ydl.extract_info(url, download=False))
+        tries = attempts_for(settings, url)
+        for attempt in range(1, tries + 1):
+            opts = base_opts(settings, cookies, work, url)  # a fresh Tor exit on each try for rotating sites
+            opts.update({
+                "skip_download": True,
+                "noplaylist": True,
+                "playlistend": 500,
+                "extract_flat": "in_playlist" if platform in ("youtube", "other") else False,
+                "paths": {"home": str(work), "temp": str(work)},
+            })
+            try:
+                with yt_dlp.YoutubeDL(opts) as ydl:
+                    info = ydl.sanitize_info(ydl.extract_info(url, download=False))
+                break
+            except yt_dlp.utils.DownloadError:
+                if attempt == tries:
+                    raise
         media = build_media(info, url)
         return media if settings.local else drop_oversize(media, settings.max_filesize_mb * 1024 * 1024)
     finally:

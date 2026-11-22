@@ -99,6 +99,12 @@ def _site_of(url: str) -> str:
     return "other"
 
 
+def attempts_for(settings: Settings, url: str) -> int:
+    """How many tries a link gets: sites behind Tor get 3, since some exits are refused."""
+    site = _site_of(url)
+    return 3 if site in settings.rotate_sites and site in settings.proxy_map else 1
+
+
 def base_opts(settings: Settings, cookies: CookieStore, workdir: Path, url: str = "") -> dict:
     opts: dict = {
         "quiet": True,
@@ -119,6 +125,9 @@ def base_opts(settings: Settings, cookies: CookieStore, workdir: Path, url: str 
     site = _site_of(url)
     if site in settings.proxy_map:
         opts["proxy"] = settings.proxy_map[site]
+        if site in settings.rotate_sites and opts["proxy"].startswith("socks"):
+            # Tor gives each distinct SOCKS login its own circuit, so every attempt leaves from a new exit.
+            opts["proxy"] = re.sub(r"^(socks5h?://)", rf"\g<1>r{uuid.uuid4().hex[:12]}:x@", opts["proxy"])
     elif settings.proxy and ("all" in settings.proxy_sites or site in settings.proxy_sites):
         opts["proxy"] = settings.proxy
     if settings.local:
@@ -344,6 +353,7 @@ class JobManager:
         try:
             opts = self._ydl_opts(job)
             retried_403 = used_safe = False
+            tries_left = attempts_for(self.settings, job.url) - 1
             while True:
                 try:
                     with yt_dlp.YoutubeDL(opts) as ydl:
@@ -357,6 +367,8 @@ class JobManager:
                     if "403" in msg and not retried_403:
                         # Signed media URLs sometimes expire or get a one-off 403; a fresh extraction fixes it.
                         retried_403 = True
+                    elif tries_left > 0 and not _FORMAT_TROUBLE.search(msg):
+                        tries_left -= 1  # a fresh Tor exit (new circuit) on the next try
                     elif _FORMAT_TROUBLE.search(msg) and not used_safe:
                         # The picked format couldn't be fetched or merged: fall back to whatever works best,
                         # so pressing Download always gives the person a file.

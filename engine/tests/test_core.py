@@ -388,5 +388,18 @@ def test_proxy_map_per_site(tmp_path, monkeypatch):
     s = Settings.load()
     s.mode = "hosted"
     assert base_opts(s, CookieStore(), tmp_path, "https://youtu.be/x")["proxy"] == "socks5://warp:1080"
-    assert base_opts(s, CookieStore(), tmp_path, "https://www.tiktok.com/@a/video/1")["proxy"] == "socks5://tor:9050"
+    assert base_opts(s, CookieStore(), tmp_path, "https://www.tiktok.com/@a/video/1")["proxy"].endswith("@tor:9050")
     assert "proxy" not in base_opts(s, CookieStore(), tmp_path, "https://x.com/a/status/1")
+
+
+def test_tor_sites_get_fresh_circuits(tmp_path, monkeypatch):
+    from ytdown_engine.jobs import CookieStore, attempts_for, base_opts
+    from ytdown_engine.settings import Settings
+    monkeypatch.setenv("YTDOWN_PROXY_MAP", "youtube=socks5://warp:1080,tiktok=socks5://tor:9050")
+    monkeypatch.setenv("YTDOWN_TEMP", str(tmp_path))
+    s = Settings.load()
+    tt = "https://www.tiktok.com/@a/video/1"
+    a, b = (base_opts(s, CookieStore(), tmp_path, tt)["proxy"] for _ in range(2))
+    assert a != b and a.startswith("socks5://r") and a.endswith(":x@tor:9050")
+    assert base_opts(s, CookieStore(), tmp_path, "https://youtu.be/x")["proxy"] == "socks5://warp:1080"
+    assert attempts_for(s, tt) == 3 and attempts_for(s, "https://youtu.be/x") == 1
