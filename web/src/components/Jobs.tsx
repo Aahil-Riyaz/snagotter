@@ -205,6 +205,7 @@ export function Handles() {
     ["Instagram", "Reels, posts, carousels"],
     ["TikTok", "Videos and short links, without the watermark when one is offered"],
     ["X", "Videos and GIFs, including posts with several"],
+    ["Facebook", "Public videos and Reels"],
     ["Other", "Most sites yt-dlp supports"],
   ];
   return (

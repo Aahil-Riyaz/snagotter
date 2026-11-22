@@ -359,3 +359,11 @@ def test_format_trouble_matches_merge_failures():
     assert _FORMAT_TROUBLE.search("ERROR: Postprocessing:   Stream #1:0 -> #0:1 (copy)")
     assert _FORMAT_TROUBLE.search("Requested format is not available")
     assert not _FORMAT_TROUBLE.search("Sign in to confirm you're not a bot")
+
+
+def test_facebook_links():
+    from ytdown_engine.urls import detect_platform, normalize
+    assert detect_platform("https://fb.watch/abc123/") == "facebook"
+    assert detect_platform("https://m.facebook.com/watch/?v=1") == "facebook"
+    assert normalize("https://m.facebook.com/watch/?v=10153231379946729&mibextid=xyz") == "https://www.facebook.com/watch/?v=10153231379946729"
+    assert normalize("fb.watch/abc123/") == "https://fb.watch/abc123/"

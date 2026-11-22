@@ -25,7 +25,7 @@ from starlette.background import BackgroundTask
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from . import __version__, doctor, errors
-from .formats import BadRequest, build_media
+from .formats import BadRequest, build_media, drop_oversize
 from .jobs import TERMINAL, CookieStore, DiskFull, JobManager, base_opts
 from .names import content_disposition
 from .settings import Settings
@@ -195,7 +195,8 @@ def _extract(url: str) -> dict:
         })
         with yt_dlp.YoutubeDL(opts) as ydl:
             info = ydl.sanitize_info(ydl.extract_info(url, download=False))
-        return build_media(info, url)
+        media = build_media(info, url)
+        return media if settings.local else drop_oversize(media, settings.max_filesize_mb * 1024 * 1024)
     finally:
         shutil.rmtree(work, ignore_errors=True)
 

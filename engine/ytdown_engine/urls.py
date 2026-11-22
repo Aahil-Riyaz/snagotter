@@ -6,11 +6,13 @@ import re
 import socket
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
-PLATFORMS = ("youtube", "instagram", "tiktok", "x", "other")
+PLATFORMS = ("youtube", "instagram", "tiktok", "x", "facebook", "other")
 
 _YT_HOSTS = {"youtube.com", "www.youtube.com", "m.youtube.com", "music.youtube.com",
              "youtu.be", "youtube-nocookie.com", "www.youtube-nocookie.com"}
 _IG_HOSTS = {"instagram.com", "www.instagram.com", "m.instagram.com"}
+_FB_HOSTS = {"facebook.com", "www.facebook.com", "m.facebook.com", "web.facebook.com", "mbasic.facebook.com",
+             "touch.facebook.com", "fb.watch", "www.fb.watch", "fb.com", "www.fb.com"}
 _TT_HOSTS = {"tiktok.com", "www.tiktok.com", "m.tiktok.com", "vm.tiktok.com", "vt.tiktok.com"}
 _X_HOSTS = {"x.com", "www.x.com", "twitter.com", "www.twitter.com", "mobile.twitter.com",
             "mobile.x.com", "fxtwitter.com", "vxtwitter.com", "fixupx.com", "fixvx.com",
@@ -51,6 +53,8 @@ def detect_platform(url: str) -> str:
         return "tiktok"
     if h in _X_HOSTS:
         return "x"
+    if h in _FB_HOSTS:
+        return "facebook"
     return "other"
 
 
@@ -80,6 +84,8 @@ def normalize(raw: str) -> str:
         netloc = "www.youtube.com"
     elif platform == "instagram":
         netloc = "www.instagram.com"
+    elif platform == "facebook" and host not in ("fb.watch", "www.fb.watch"):
+        netloc = "www.facebook.com"
 
     drop = _TRACKING | (_TRACKING_X if platform == "x" else set())
     query = [(k, v) for k, v in parse_qsl(parts.query, keep_blank_values=False)

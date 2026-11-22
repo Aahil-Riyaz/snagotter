@@ -92,7 +92,8 @@ _FORMAT_TROUBLE = re.compile(
 def _site_of(url: str) -> str:
     host = (urlsplit(url).hostname or "").lower()
     for site, marks in (("youtube", ("youtube.com", "youtu.be")), ("tiktok", ("tiktok.com",)),
-                        ("instagram", ("instagram.com",)), ("x", ("x.com", "twitter.com"))):
+                        ("instagram", ("instagram.com",)), ("x", ("x.com", "twitter.com")),
+                        ("facebook", ("facebook.com", "fb.watch", "fb.com"))):
         if any(host == m or host.endswith("." + m) for m in marks):
             return site
     return "other"
@@ -107,7 +108,7 @@ def base_opts(settings: Settings, cookies: CookieStore, workdir: Path, url: str 
         "socket_timeout": 20,
         "retries": 3,
         "fragment_retries": 5,
-        "concurrent_fragment_downloads": 4,
+        "concurrent_fragment_downloads": 8,
         "windowsfilenames": True,
         "js_runtimes": doctor.js_runtimes(),
         "cachedir": str(Path(settings.temp_dir) / ".cache"),
@@ -508,9 +509,9 @@ class JobManager:
         dst = src.with_name(src.stem + ".h264.mp4")
         audio = ["-c:a", "copy"] if acodec == "aac" else ["-c:a", "aac", "-b:a", "192k"]
         subprocess.run([self._ffmpeg(), "-v", "error", "-y", "-i", str(src), "-map", "0:v:0", "-map", "0:a?",
-                        # superfast + a bitrate cap: about 1 s per second of 1080p video on a 2-core server,
+                        # ultrafast + a bitrate cap: about 0.5 s per second of 1080p video on a 2-core server,
                         # and files near the source size instead of several times bigger.
-                        "-c:v", "libx264", "-preset", "superfast", "-crf", "23", "-maxrate", "4M", "-bufsize", "8M",
+                        "-c:v", "libx264", "-preset", "ultrafast", "-crf", "23", "-maxrate", "4M", "-bufsize", "8M",
                         "-pix_fmt", "yuv420p",
                         *audio, "-movflags", "+faststart", str(dst)],
                        check=True, capture_output=True, timeout=3600, creationflags=_NO_WINDOW)

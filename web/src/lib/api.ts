@@ -3,7 +3,7 @@
 // 2. a URL the user saved in settings
 // 3. VITE_ENGINE_URL (Vercel build) or http://127.0.0.1:8787
 
-export type Platform = "youtube" | "instagram" | "tiktok" | "x" | "other";
+export type Platform = "youtube" | "instagram" | "tiktok" | "x" | "facebook" | "other";
 export type Size = { bytes: number | null; approx: boolean };
 
 export interface Variant {

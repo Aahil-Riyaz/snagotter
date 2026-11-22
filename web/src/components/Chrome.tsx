@@ -68,7 +68,7 @@ export function AboutDialog({ onClose }: { onClose: () => void }) {
   return (
     <Dialog title="About ytdown" onClose={onClose}>
       <div className="prose">
-        <p>ytdown is a free downloader for YouTube, Instagram, TikTok, X and most other video sites. It has no accounts, ads or tracking.</p>
+        <p>ytdown is a free downloader for YouTube, Instagram, TikTok, X, Facebook and most other video sites. It has no accounts, ads or tracking.</p>
         <p>
           The work happens in the ytdown engine, on your own computer or on a ytdown server, built on{" "}
           <a href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noreferrer">yt-dlp</a> and{" "}

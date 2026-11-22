@@ -180,14 +180,13 @@ export function Controls({ m, s, set }: { m: SingleMedia; s: Sel; set: (p: Parti
   return (
     <div className="controls">
       <div className="seg" role="radiogroup" aria-label="What to download">
-        {modes.map(([k, label], i) => (
+        {modes.map(([k, label], i) => ((noVideo && k !== "audio") || (k === "audio" && !m.has_audio)) ? null : (
           <button
             key={k}
             ref={(el) => { refs.current[i] = el; }}
             role="radio"
             aria-checked={s.mode === k}
             tabIndex={s.mode === k ? 0 : -1}
-            disabled={(noVideo && k !== "audio") || (k === "audio" && !m.has_audio)}
             onClick={() => set({ mode: k })}
             onKeyDown={(e) => {
               if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
@@ -249,25 +248,23 @@ export function SpecSheet({ m, s, set, onCommit }: { m: SingleMedia; s: Sel; set
       <div className="row head" aria-hidden="true">
         <span>Quality</span><span>fps</span><span>Codec</span><span>Container</span><span className="sz">Size</span>
       </div>
-      {m.video.map((g) => {
-        const on = groupEnabled(m, s, g);
+      {enabled.map((g) => {
         const sel = s.groupKey === g.key;
         const v = pickVariant(m, s, g) ?? g.variants[0];
         const sz = sizeText(videoOnly ? v.size_v : v.size_av);
-        const container = videoOnly ? (v.source_ext ?? v.container) : s.compat && hasH264(m) && on ? "mp4" : v.container;
+        const container = videoOnly ? (v.source_ext ?? v.container) : s.compat ? "mp4" : v.container;
         const name = `${g.label}${g.res && g.res !== g.label ? ` ${g.res}` : ""}${g.fps ? `, ${g.fps} fps` : ""}${g.hdr ? ", HDR" : ""}`;
         return (
-          <div key={g.key} className={cx("row", sel && "sel", !on && "off")}>
+          <div key={g.key} className={cx("row", sel && "sel")}>
             <button
               ref={(el) => { rowRefs.current[g.key] = el; }}
               className="row-hit"
               role="radio"
               aria-checked={sel}
-              aria-disabled={!on || undefined}
-              aria-label={`${name}, ${v.codec}, ${container.toUpperCase()}, ${sz.text}${!on ? ", needs Plays everywhere off" : ""}`}
+              aria-label={`${name}, ${v.codec}, ${container.toUpperCase()}, ${sz.text}`}
               tabIndex={sel ? 0 : -1}
-              onClick={() => on && set({ groupKey: g.key, codec: v.codec })}
-              onDoubleClick={() => on && onCommit()}
+              onClick={() => set({ groupKey: g.key, codec: v.codec })}
+              onDoubleClick={() => onCommit()}
               onKeyDown={(e) => {
                 if (e.key === "ArrowDown") { e.preventDefault(); move(g, 1); }
                 else if (e.key === "ArrowUp") { e.preventDefault(); move(g, -1); }
@@ -288,11 +285,10 @@ export function SpecSheet({ m, s, set, onCommit }: { m: SingleMedia; s: Sel; set
             </span>
             <span className="mono fps">{g.fps ?? "–"}</span>
             <span className="chips" role="radiogroup" aria-label={`Codec for ${g.label}`}>
-              {g.variants.map((x) => {
-                const xOk = groupEnabled(m, s, { ...g, variants: [x] });
+              {g.variants.filter((x) => groupEnabled(m, s, { ...g, variants: [x] })).map((x) => {
                 return (
                   <button key={x.format_id} className="chip" role="radio" tabIndex={-1}
-                    aria-checked={sel && x.codec === v.codec} disabled={!xOk}
+                    aria-checked={sel && x.codec === v.codec}
                     title={x.watermarked ? "Has the site's watermark" : undefined}
                     onClick={() => set({ groupKey: g.key, codec: x.codec })}>
                     {x.codec}{x.watermarked ? "·wm" : ""}

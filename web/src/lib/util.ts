@@ -7,6 +7,7 @@ const HOSTS: [Platform, RegExp][] = [
   ["instagram", /(^|\.)instagram\.com$/i],
   ["tiktok", /(^|\.)tiktok\.com$/i],
   ["x", /(^|\.)(x\.com|twitter\.com|fxtwitter\.com|vxtwitter\.com|fixupx\.com|fixvx\.com)$/i],
+  ["facebook", /(^|\.)(facebook\.com|fb\.watch|fb\.com)$/i],
 ];
 
 export const PLATFORM_NAME: Record<Platform, string> = {
@@ -14,6 +15,7 @@ export const PLATFORM_NAME: Record<Platform, string> = {
   instagram: "Instagram",
   tiktok: "TikTok",
   x: "X",
+  facebook: "Facebook",
   other: "Other site",
 };
 

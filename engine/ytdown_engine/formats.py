@@ -398,6 +398,23 @@ def _fid(v: str | None, name: str) -> str | None:
     return v
 
 
+def drop_oversize(media: dict, max_bytes: int) -> dict:
+    """On a server with a size cap, only offer what it will actually deliver."""
+    def fits(size: dict | None) -> bool:
+        b = (size or {}).get("bytes")
+        return not b or b <= max_bytes * (1.25 if (size or {}).get("approx") else 1)
+
+    groups = []
+    for g in media.get("video") or []:
+        vs = [v for v in g["variants"] if fits(v.get("size_av")) or fits(v.get("size_v"))]
+        if vs:
+            groups.append({**g, "variants": vs})
+    for i, g in enumerate(groups):
+        g["best"] = i == 0
+    audio = [a for a in media.get("audio") or [] if fits(a.get("size"))]
+    return {**media, "video": groups, "audio": audio} if "video" in media else media
+
+
 def safe_plan(plan: Plan, mode: str | None) -> Plan:
     """A plan that almost always works: best available, in a container that holds any streams.
     Keeps conversions, subtitles, trim and GIF; only the format choice and container change."""
