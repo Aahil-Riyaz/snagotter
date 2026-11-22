@@ -380,7 +380,11 @@ class JobManager:
             elif (job.req.get("compat") and job.req.get("mode") in ("av", "video")
                   and main.suffix.lower() in (".mp4", ".mkv", ".webm", ".mov")):
                 vcodec, acodec = self._codecs(main)
-                if vcodec and vcodec != "h264":
+                # Only short, up-to-1080p videos: converting 4K or long videos would take too long on a
+                # small server; those stay in their original codec, still in an MP4.
+                w, h = self._probe_size(main)
+                small = (short_side(w, h) or 0) <= 1080 and (info.get("duration") or 0) <= 15 * 60
+                if vcodec and vcodec != "h264" and small:
                     self._set(job, "converting", percent=None)
                     main = self._to_h264(main, acodec)
             self._collect_extras(job, main)

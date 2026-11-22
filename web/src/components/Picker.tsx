@@ -130,7 +130,9 @@ export function resolve(m: SingleMedia, s: Sel): Resolved {
   if (!g || !v) return bad;
   const videoOnly = s.mode === "video";
   const gif = !!opts.gif;
-  const container = gif ? "gif" : videoOnly ? (v.muxed ? v.container : v.source_ext ?? v.container) : s.compat && hasH264(m) ? "mp4" : v.container;
+  // Plays everywhere on a site without H.264 (Instagram Reels are VP9-only): the engine converts to H.264.
+  const convert = s.compat && !gif && !hasH264(m) && (v.codec === "VP9" || v.codec === "AV1");
+  const container = gif ? "gif" : videoOnly ? (convert ? "mp4" : v.muxed ? v.container : v.source_ext ?? v.container) : s.compat ? "mp4" : v.container;
   const sz = sizeText(gif ? null : videoOnly ? v.size_v : v.size_av, scale);
   const label = gif ? "GIF" : videoOnly ? `${g.label}, no audio` : g.label;
   const fps = g.fps ? `${g.fps}` : "";
@@ -142,7 +144,7 @@ export function resolve(m: SingleMedia, s: Sel): Resolved {
     audio_id: videoOnly ? null : v.audio_id,
     muxed: v.muxed,
     container: videoOnly || gif ? null : container,
-    compat: s.compat && hasH264(m),
+    compat: s.compat,
   };
   const what = gif ? "GIF" : videoOnly ? `${g.label} video only` : `${g.label} ${container.toUpperCase()}`;
   return {
@@ -155,7 +157,7 @@ export function resolve(m: SingleMedia, s: Sel): Resolved {
       ["Video", `${v.codec} · ${res}${fps}`],
       ["Audio", videoOnly || gif ? "None" : audioLabel(m, v)],
       ["Size", gif ? "depends on length" : sz.text],
-      ["Re-encoding", gif ? "Yes, to GIF" : "None"],
+      ["Re-encoding", gif ? "Yes, to GIF" : convert ? "Yes, to H.264 so it plays everywhere" : "None"],
     ],
     filename: previewName(m.title, m.uploader, label, container),
     note: v.watermarked ? "This version has the site's watermark. It's the only one offered at this quality." : null,
@@ -173,7 +175,7 @@ function audioLabel(m: SingleMedia, v: Variant): string {
 export function Controls({ m, s, set }: { m: SingleMedia; s: Sel; set: (p: Partial<Sel>) => void }) {
   const modes: [Sel["mode"], string][] = [["av", "Video + audio"], ["video", "Video only"], ["audio", "Audio only"]];
   const noVideo = !m.video.length;
-  const canCompat = hasH264(m);
+  const hasH = hasH264(m);
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
   return (
     <div className="controls">
@@ -203,13 +205,15 @@ export function Controls({ m, s, set }: { m: SingleMedia; s: Sel; set: (p: Parti
       </div>
       {s.mode !== "audio" && (
         <>
-          <button className="toggle" role="switch" aria-checked={s.compat && canCompat} disabled={!canCompat}
+          <button className="toggle" role="switch" aria-checked={s.compat}
             aria-describedby="compat-help" onClick={() => set({ compat: !s.compat })}>
             <span className="track" aria-hidden="true" />Plays everywhere
           </button>
           <p className="explain" id="compat-help">
-            {!canCompat
-              ? "This site doesn't offer H.264, so files keep their original codec."
+            {!hasH
+              ? s.compat
+                ? "This site only offers VP9 or AV1, so ytdown converts the video to H.264 in an MP4. It takes a little longer."
+                : "Off: you get the site's original file (VP9 or AV1). Some phones and editors can't play it."
               : s.compat
                 ? `H.264 video${s.mode === "av" ? " with AAC audio in an MP4" : " in an MP4"} plays on any phone, TV or editor.${m.platform === "youtube" ? " YouTube only offers H.264 up to 1080p, so 4K and 2K need this off." : ""}`
                 : "Off: you get the true best quality (AV1 or VP9 with Opus). Some phones and editors can't play these."}
