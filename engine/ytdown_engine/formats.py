@@ -406,7 +406,7 @@ def safe_plan(plan: Plan, mode: str | None) -> Plan:
     elif mode == "video":
         fmt, merge = "bv*/b", None
     else:
-        fmt, merge = "bv*+ba/b", "mp4/mkv"
+        fmt, merge = "bv*+ba/b", "mp4"
     return replace(plan, format=fmt, merge_output_format=merge)
 
 
@@ -440,9 +440,10 @@ def build_plan(req: dict) -> Plan:
             merge = "mp4"
         elif container in ("mp4", "webm", "mkv"):
             # The chosen container first; yt-dlp moves on if it can't hold this pair of streams.
-            merge = {"webm": "webm/mp4/mkv", "mp4": "mp4/mkv", "mkv": "mkv"}[container]
+            # MP4 alone: yt-dlp would otherwise skip it for VP9 and fall to MKV, which phones can't play.
+            merge = {"webm": "webm/mp4", "mp4": "mp4", "mkv": "mkv"}[container]
         else:
-            merge = "mp4/webm/mkv"
+            merge = "mp4"
         plan = Plan(fmt, merge, label=None)
         if opts.get("gif"):
             plan.to_gif = True

@@ -157,7 +157,7 @@ def test_playlist_entries():
 
 def test_plan_av_selected_pair():
     p = formats.build_plan({"mode": "av", "format_id": "299", "audio_id": "140", "container": "mp4"})
-    assert p.format.startswith("299+140/") and p.merge_output_format == "mp4/mkv"
+    assert p.format.startswith("299+140/") and p.merge_output_format == "mp4"
 
 
 def test_plan_compat_forces_mp4():
@@ -347,9 +347,9 @@ def test_vp9_with_aac_merges_to_mp4_and_safe_plan():
     assert merge_container("AV1", "mp4", "AAC") == "mp4"
     assert merge_container("H.264", "mp4", "AAC") == "mp4"
     p = build_plan({"mode": "av", "format_id": "1", "audio_id": "2", "container": "webm"})
-    assert p.merge_output_format == "webm/mp4/mkv"
+    assert p.merge_output_format == "webm/mp4"
     s = safe_plan(p, "av")
-    assert s.format == "bv*+ba/b" and s.merge_output_format == "mp4/mkv"
+    assert s.format == "bv*+ba/b" and s.merge_output_format == "mp4"
     a = safe_plan(build_plan({"mode": "audio", "convert": {"codec": "mp3", "bitrate": 320}}), "audio")
     assert a.format == "ba/b" and a.postprocessors  # conversion kept
 

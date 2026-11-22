@@ -377,6 +377,12 @@ class JobManager:
             if job.plan.to_gif:
                 self._set(job, "converting", percent=None)
                 main = self._to_gif(main)
+            elif (job.req.get("compat") and job.req.get("mode") in ("av", "video")
+                  and main.suffix.lower() in (".mp4", ".mkv", ".webm", ".mov")):
+                vcodec, acodec = self._codecs(main)
+                if vcodec and vcodec != "h264":
+                    self._set(job, "converting", percent=None)
+                    main = self._to_h264(main, acodec)
             self._collect_extras(job, main)
             label = self._label(job, info, main)
             final = job.dir / build_filename(info.get("title"), info.get("uploader") or info.get("channel"),
@@ -471,6 +477,36 @@ class JobManager:
         dst = src.with_name(src.stem + ".noaudio" + src.suffix)
         subprocess.run([self._ffmpeg(), "-v", "error", "-y", "-i", str(src), "-map", "0:v", "-c", "copy",
                         "-an", str(dst)], check=True, capture_output=True, timeout=1800, creationflags=_NO_WINDOW)
+        src.unlink(missing_ok=True)
+        return dst
+
+    def _codecs(self, path: Path) -> tuple[str | None, str | None]:
+        """(video codec, audio codec) of a finished file, as ffprobe names them."""
+        exe = doctor.tools()["ffprobe"]["path"]
+        if not exe:
+            return None, None
+        try:
+            out = subprocess.run([exe, "-v", "error", "-show_entries", "stream=codec_type,codec_name", "-of", "csv=p=0",
+                                  str(path)], capture_output=True, text=True, timeout=30, creationflags=_NO_WINDOW)
+        except (OSError, subprocess.SubprocessError):
+            return None, None
+        v = a = None
+        for line in out.stdout.splitlines():
+            name, _, kind = line.partition(",")
+            if kind.strip() == "video" and not v:
+                v = name.strip()
+            elif kind.strip() == "audio" and not a:
+                a = name.strip()
+        return v, a
+
+    def _to_h264(self, src: Path, acodec: str | None) -> Path:
+        """'Plays everywhere' when the site only offers VP9/AV1: H.264 + AAC in MP4, same resolution."""
+        dst = src.with_name(src.stem + ".h264.mp4")
+        audio = ["-c:a", "copy"] if acodec == "aac" else ["-c:a", "aac", "-b:a", "192k"]
+        subprocess.run([self._ffmpeg(), "-v", "error", "-y", "-i", str(src), "-map", "0:v:0", "-map", "0:a?",
+                        "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-pix_fmt", "yuv420p",
+                        *audio, "-movflags", "+faststart", str(dst)],
+                       check=True, capture_output=True, timeout=3600, creationflags=_NO_WINDOW)
         src.unlink(missing_ok=True)
         return dst
 
