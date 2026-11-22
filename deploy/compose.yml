@@ -19,9 +19,10 @@ services:
       YTDOWN_MAX_TEMP_GB: "20"
       YTDOWN_MAX_FILESIZE_MB: "2048"
       YTDOWN_RATE_PER_MINUTE: "20"
-      # Optional (set in deploy/.env): a proxy for sites that refuse cloud servers.
-      YTDOWN_PROXY: ${YTDOWN_PROXY:-}
-      YTDOWN_PROXY_SITES: ${YTDOWN_PROXY_SITES:-youtube,tiktok}
+      # YouTube refuses cloud addresses, so it goes through Cloudflare WARP (free, the warp service below).
+      # Override in deploy/.env to use another proxy, or set YTDOWN_PROXY= to turn it off.
+      YTDOWN_PROXY: ${YTDOWN_PROXY-socks5://ytdown-warp:1080}
+      YTDOWN_PROXY_SITES: ${YTDOWN_PROXY_SITES:-youtube}
       # Optional: deploy/secrets/cookies.txt from a spare account, used only for these sites.
       YTDOWN_COOKIES_FILE: /run/ytdown-secrets/cookies.txt
       YTDOWN_COOKIE_SITES: ${YTDOWN_COOKIE_SITES:-instagram}
@@ -29,10 +30,26 @@ services:
       - ytdown_tmp:/tmp/ytdown      # on disk, not RAM, so other services keep their memory
       - ./secrets:/run/ytdown-secrets:ro
     mem_limit: 1536m
+    depends_on: [warp]
     networks: [proxy]
+
+  warp:
+    # Cloudflare WARP in proxy mode, from Cloudflare's official package. NET_ADMIN lets it set
+    # routing rules inside its own container only; it doesn't touch the host's network.
+    build: ./warp
+    image: ytdown-warp:latest
+    container_name: ytdown-warp
+    restart: unless-stopped
+    cap_add: [NET_ADMIN]
+    volumes:
+      - warp_data:/var/lib/cloudflare-warp   # keeps the free WARP registration across restarts
+    mem_limit: 256m
+    networks: [proxy]
+
 networks:
   proxy:
     external: true
     name: ${YTDOWN_PROXY_NETWORK:-n8n_default}
 volumes:
   ytdown_tmp:
+  warp_data:
