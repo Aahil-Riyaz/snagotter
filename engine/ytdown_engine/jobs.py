@@ -504,7 +504,10 @@ class JobManager:
         dst = src.with_name(src.stem + ".h264.mp4")
         audio = ["-c:a", "copy"] if acodec == "aac" else ["-c:a", "aac", "-b:a", "192k"]
         subprocess.run([self._ffmpeg(), "-v", "error", "-y", "-i", str(src), "-map", "0:v:0", "-map", "0:a?",
-                        "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-pix_fmt", "yuv420p",
+                        # superfast + a bitrate cap: about 1 s per second of 1080p video on a 2-core server,
+                        # and files near the source size instead of several times bigger.
+                        "-c:v", "libx264", "-preset", "superfast", "-crf", "23", "-maxrate", "4M", "-bufsize", "8M",
+                        "-pix_fmt", "yuv420p",
                         *audio, "-movflags", "+faststart", str(dst)],
                        check=True, capture_output=True, timeout=3600, creationflags=_NO_WINDOW)
         src.unlink(missing_ok=True)
