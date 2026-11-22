@@ -9,3 +9,4 @@ web/dev-dist/
 cookies.txt
 .env
 .vercel
+deploy/.env

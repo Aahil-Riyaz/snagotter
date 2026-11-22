@@ -177,6 +177,15 @@ export function engineBase(): string {
 export function fallbackEngine(): string {
   return savedEngineUrl() ?? FALLBACK;
 }
+/** True when the app is set to use an engine on a server rather than on this computer. */
+export function remoteEngine(): boolean {
+  try {
+    const h = new URL(fallbackEngine()).hostname;
+    return !["127.0.0.1", "localhost", "[::1]", "::1"].includes(h);
+  } catch {
+    return false;
+  }
+}
 
 async function probe(origin: string): Promise<Doctor | null> {
   try {

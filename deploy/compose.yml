@@ -1,0 +1,31 @@
+# ytdown on a public server, behind an existing Caddy (see deploy/install.sh).
+# Run from the repo root:  docker compose -f deploy/compose.yml --env-file deploy/.env up -d --build
+services:
+  ytdown:
+    build:
+      context: ..
+      args:
+        VITE_ENGINE_URL: ""          # the app is served by the engine itself: same origin
+        VITE_REPO_URL: ${YTDOWN_REPO_URL:-https://github.com/Aahil-Riyaz/ytdown}
+    image: ytdown:server
+    container_name: ytdown
+    restart: unless-stopped
+    environment:
+      YTDOWN_MODE: hosted
+      YTDOWN_AUTOUPDATE: nightly
+      YTDOWN_ORIGINS: https://${YTDOWN_DOMAIN},https://ytdown-beta.vercel.app
+      YTDOWN_TRUSTED_PROXIES: "*"   # only reachable through Caddy on the Docker network
+      YTDOWN_CONCURRENCY: "2"
+      YTDOWN_MAX_TEMP_GB: "20"
+      YTDOWN_MAX_FILESIZE_MB: "2048"
+      YTDOWN_RATE_PER_MINUTE: "20"
+    volumes:
+      - ytdown_tmp:/tmp/ytdown      # on disk, not RAM, so other services keep their memory
+    mem_limit: 1536m
+    networks: [proxy]
+networks:
+  proxy:
+    external: true
+    name: ${YTDOWN_PROXY_NETWORK:-n8n_default}
+volumes:
+  ytdown_tmp:

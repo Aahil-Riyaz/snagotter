@@ -31,6 +31,9 @@ def main() -> int:
            "YTDOWN_HOST": a.host, "YTDOWN_PORT": str(a.port)}
     cmd = [sys.executable, "-m", "uvicorn", "ytdown_engine.app:app", "--host", a.host, "--port", str(a.port),
            "--log-level", "warning", "--no-access-log"]
+    # Behind a reverse proxy (Caddy in deploy/), trust its X-Forwarded-For so per-IP limits see real visitors.
+    if os.environ.get("YTDOWN_TRUSTED_PROXIES"):
+        cmd += ["--proxy-headers", "--forwarded-allow-ips", os.environ["YTDOWN_TRUSTED_PROXIES"]]
     if a.reload:
         cmd.append("--reload")
     print(f"ytdown engine on http://{'127.0.0.1' if a.host in ('0.0.0.0', '::') else a.host}:{a.port}  (Ctrl+C to stop)")

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Check, Copy, Moon, Settings, Sun, X } from "lucide-react";
-import { api, connect, fallbackEngine, setSavedEngineUrl, type Doctor } from "../lib/api";
+import { api, connect, fallbackEngine, remoteEngine, setSavedEngineUrl, type Doctor } from "../lib/api";
 import { getTheme, setTheme } from "../lib/store";
 
 const I = { size: 18, strokeWidth: 1.5, "aria-hidden": true } as const;
@@ -160,6 +160,21 @@ function CopyLine({ cmd, label }: { cmd: string; label: string }) {
 export function ConnectEngine({ onRetry, checking }: { onRetry: () => void; checking: boolean }) {
   const win = /Win/.test(navigator.userAgent);
   const mobile = /Android|iPhone|iPad/.test(navigator.userAgent);
+  if (remoteEngine()) {
+    return (
+      <section className="connect" aria-labelledby="connect-h">
+        <h1 id="connect-h">The download server isn't answering.</h1>
+        <p className="lede">
+          This page uses the ytdown server at <span className="mono">{fallbackEngine()}</span>. It may be restarting
+          after an update, which takes about a minute.
+        </p>
+        <div className="row-actions">
+          <button className="btn btn-1" onClick={onRetry} disabled={checking}>{checking ? "Checking…" : "Check again"}</button>
+        </div>
+        <p className="help">Running ytdown on your own computer? Put its address in Settings.</p>
+      </section>
+    );
+  }
   return (
     <section className="connect" aria-labelledby="connect-h">
       <h1 id="connect-h">Start the engine.</h1>
