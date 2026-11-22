@@ -1,10 +1,10 @@
-# ytdown
+# SnagOtter
 
-**Live app:** https://ytdown-beta.vercel.app (needs the engine running on your computer, see below)
+**Live app:** https://snagotter.vercel.app (runs 24/7, nothing to install)
 
-Paste a link, see the media, pick exactly the format you want, download it. YouTube, Instagram, TikTok, X and most other sites [yt-dlp](https://github.com/yt-dlp/yt-dlp) supports. No accounts, no ads, no tracking.
+Paste a link, see the media, pick exactly the format you want, download it. YouTube, Instagram, TikTok, Facebook, X and most other sites [yt-dlp](https://github.com/yt-dlp/yt-dlp) supports. No accounts, no ads, no tracking.
 
-ytdown is **local-first**. The download engine runs on your own computer, so sites see a normal home connection, and your links and files never pass through anyone else's server. The app is an installable web app (PWA). You can use it straight from the engine, or host it on Vercel and point it at your engine.
+SnagOtter is **local-first**. The download engine runs on your own computer, so sites see a normal home connection, and your links and files never pass through anyone else's server. The app is an installable web app (PWA). You can use it straight from the engine, or host it on Vercel and point it at your engine.
 
 Made by Aahil Riyaz Beekay. Only download content you have the right to use.
 
@@ -34,7 +34,7 @@ sudo apt install python3 python3-venv nodejs npm ffmpeg   # Node must be 22+: ht
 ./start.sh
 ```
 
-The first run creates `engine/.venv`, installs the engine and builds the app. After that, it starts the engine on **http://127.0.0.1:8787** and opens it in your browser. Install it from the browser's address bar ("Install app") to get a desktop or phone app with a share target: share a link from another app straight into ytdown.
+The first run creates `engine/.venv`, installs the engine and builds the app. After that, it starts the engine on **http://127.0.0.1:8787** and opens it in your browser. Install it from the browser's address bar ("Install app") to get a desktop or phone app with a share target: share a link from another app straight into SnagOtter.
 
 **Docker:**
 ```sh
@@ -62,7 +62,7 @@ The engine can't run on Vercel itself, for three reasons:
 3. Optional environment variables:
    - `VITE_ENGINE_URL`: where the app looks for the engine (default `http://127.0.0.1:8787`).
    - `VITE_REPO_URL`: shows a GitHub link in the footer.
-4. Allow your Vercel address on the engine. The public deployment, `https://ytdown-beta.vercel.app`, is allowed out of the box. For your own deployment, start the engine with:
+4. Allow your Vercel address on the engine. The public deployment, `https://snagotter.vercel.app`, is allowed out of the box. For your own deployment, start the engine with:
    ```powershell
    $env:YTDOWN_ORIGINS = "https://your-app.vercel.app,http://127.0.0.1:8787,http://localhost:8787"; .\start.ps1
    ```
@@ -79,11 +79,11 @@ The engine can't run on Vercel itself, for three reasons:
 
 ## Run it 24/7 on a server
 
-`deploy/` runs ytdown in Docker behind an existing Caddy (for example next to n8n). The public instance runs this way at https://ytdown.aahil-auto.duckdns.org, and the Vercel app uses it through `VITE_ENGINE_URL`.
+`deploy/` runs SnagOtter in Docker behind an existing Caddy (for example next to n8n). The public instance runs this way at https://snagotter.aahil-auto.duckdns.org, and the Vercel app uses it through `VITE_ENGINE_URL`.
 
 ```sh
-git clone https://github.com/Aahil-Riyaz/ytdown.git && cd ytdown
-YTDOWN_DOMAIN=ytdown.example.org CADDY_DIR=~/n8n sh deploy/install.sh
+git clone https://github.com/Aahil-Riyaz/snagotter.git && cd snagotter
+YTDOWN_DOMAIN=snagotter.example.org CADDY_DIR=~/n8n sh deploy/install.sh
 ```
 
 It runs in hosted mode (per-IP rate limit, size and length caps, no engine-update button). It updates yt-dlp on every start, and a daily job pulls this repo and restarts it.
@@ -118,7 +118,7 @@ engine\.venv\Scripts\python -m pip install -U --pre "yt-dlp[default]"
 engine/.venv/bin/python -m pip install -U --pre "yt-dlp[default]"
 ```
 
-**"ffmpeg isn't installed."** Use `winget install Gyan.FFmpeg`, `brew install ffmpeg` or `sudo apt install ffmpeg`, then restart ytdown. The engine also finds ffmpeg in winget's folders, or wherever `YTDOWN_FFMPEG_DIR` points.
+**"ffmpeg isn't installed."** Use `winget install Gyan.FFmpeg`, `brew install ffmpeg` or `sudo apt install ffmpeg`, then restart SnagOtter. The engine also finds ffmpeg in winget's folders, or wherever `YTDOWN_FFMPEG_DIR` points.
 
 **"No JavaScript runtime found" or YouTube shows only low qualities.** Install Node 22+ (`winget install OpenJS.NodeJS.LTS`, `brew install node`). Deno 2.3+ works too. Keep `yt-dlp[default]` installed, since it brings the matching `yt-dlp-ejs`.
 

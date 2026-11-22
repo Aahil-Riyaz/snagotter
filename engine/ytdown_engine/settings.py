@@ -10,7 +10,7 @@ from pathlib import Path
 DEFAULT_ORIGINS = [
     "http://127.0.0.1:8787", "http://localhost:8787",
     "http://127.0.0.1:5173", "http://localhost:5173",
-    "https://ytdown-beta.vercel.app",
+    "https://snagotter.vercel.app", "https://ytdown-beta.vercel.app",
 ]
 
 
@@ -30,7 +30,7 @@ class Settings:
     ttl_seconds: int = 3600
     temp_dir: str = field(default_factory=lambda: str(Path(tempfile.gettempdir()) / "ytdown"))
     max_temp_bytes: int = 20 * 1024**3
-    save_dir: str = field(default_factory=lambda: str(Path.home() / "Downloads" / "ytdown"))
+    save_dir: str = field(default_factory=lambda: str(Path.home() / "Downloads" / "SnagOtter"))
     channel: str = "stable"                 # "stable" or "nightly"
     origins: list[str] = field(default_factory=lambda: list(DEFAULT_ORIGINS))
     # hosted-mode guards

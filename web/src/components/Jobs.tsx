@@ -97,7 +97,7 @@ export function JobCard({ job, meta, local, onCancel, onAgain, onAction, autoSav
           </div>
           <div className="job-foot">
             <p className="small">{job.status === "merging" ? "Merging is a remux: the video is copied, not re-encoded." :
-              job.status === "queued" ? "It starts when a slot frees up." : "You can keep using ytdown while this runs."}</p>
+              job.status === "queued" ? "It starts when a slot frees up." : "You can keep using SnagOtter while this runs."}</p>
             <button className="btn btn-2" onClick={onCancel}>Cancel download</button>
           </div>
         </>
@@ -115,7 +115,7 @@ export function JobCard({ job, meta, local, onCancel, onAgain, onAction, autoSav
               {isIOS() ? "Save to Files" : autoSaved ? "Download again" : "Save file"}
             </a>
             {local && !job.saved_to && (
-              <button className="btn btn-2" onClick={() => onAction("save")}>Save to the ytdown folder</button>
+              <button className="btn btn-2" onClick={() => onAction("save")}>Save to the SnagOtter folder</button>
             )}
             {job.extras.includes("subtitles") && <a className="btn btn-quiet" href={api.fileUrl(job.id, "subtitles")}>Subtitles (.srt)</a>}
             {job.extras.includes("thumbnail") && <a className="btn btn-quiet" href={api.fileUrl(job.id, "thumbnail")}>Thumbnail</a>}

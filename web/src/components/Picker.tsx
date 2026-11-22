@@ -211,7 +211,7 @@ export function Controls({ m, s, set }: { m: SingleMedia; s: Sel; set: (p: Parti
           <p className="explain" id="compat-help">
             {!hasH
               ? s.compat
-                ? "This site only offers VP9 or AV1, so ytdown converts the video to H.264 in an MP4. It takes a little longer."
+                ? "This site only offers VP9 or AV1, so SnagOtter converts the video to H.264 in an MP4. It takes a little longer."
                 : "Off: you get the site's original file (VP9 or AV1). Some phones and editors can't play it."
               : s.compat
                 ? `H.264 video${s.mode === "av" ? " with AAC audio in an MP4" : " in an MP4"} plays on any phone, TV or editor.${m.platform === "youtube" ? " YouTube only offers H.264 up to 1080p, so 4K and 2K need this off." : ""}`

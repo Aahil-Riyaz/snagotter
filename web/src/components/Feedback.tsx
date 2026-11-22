@@ -15,7 +15,7 @@ export function ErrorBlock({ error, local, onAction, embedded }: {
   const id = useId();
   // Cookies only make sense when the engine runs on this person's own machine.
   const action = error.action === "cookies" && !local ? null : error.action;
-  const hint = error.action === "cookies" && !local ? `${error.hint?.split(". ")[0]}. Try again later, or run ytdown on your own computer.` : error.hint;
+  const hint = error.action === "cookies" && !local ? `${error.hint?.split(". ")[0]}. Try again later, or run SnagOtter on your own computer.` : error.hint;
   return (
     <div className={cx("err", embedded && "err-embedded")} role="alert">
       <p className="err-title">{error.title}</p>

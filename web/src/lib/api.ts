@@ -1,4 +1,4 @@
-// Typed client for the ytdown engine. The engine is found in this order:
+// Typed client for the SnagOtter engine. The engine is found in this order:
 // 1. same origin (served by the engine, or the Vite dev proxy)
 // 2. a URL the user saved in settings
 // 3. VITE_ENGINE_URL (Vercel build) or http://127.0.0.1:8787
@@ -218,7 +218,7 @@ export async function connect(): Promise<Doctor | null> {
 const offlineError: ApiError = {
   code: "engine_offline",
   title: "Can't reach the engine.",
-  hint: "Start ytdown on your computer, then try again.",
+  hint: "Start SnagOtter on your computer, then try again.",
   action: "retry",
   action_label: "Try again",
   details: null,

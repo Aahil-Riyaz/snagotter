@@ -13,7 +13,7 @@ export function TopBar({ doctor, offline, onSettings }: { doctor: Doctor | null;
   return (
     <header className="top">
       <div className="wrap">
-        <a className="mark" href="/" aria-label="ytdown, start over">ytdown</a>
+        <a className="mark" href="/" aria-label="SnagOtter, start over">SnagOtter</a>
         <div className="spacer" />
         <div className="status" role="status" aria-label={text}>
           <span className={`dot dot-${state}`} aria-hidden="true" />
@@ -44,7 +44,7 @@ export function Footer({ doctor, onAbout }: { doctor: Doctor | null; onAbout: ()
   return (
     <footer>
       <div className="wrap">
-        <span className="mono">ytdown {doctor?.app_version ?? "0.1.0"}</span>
+        <span className="mono">SnagOtter {doctor?.app_version ?? "0.1.0"}</span>
         <span>
           {doctor ? (
             <>
@@ -66,11 +66,11 @@ export function Footer({ doctor, onAbout }: { doctor: Doctor | null; onAbout: ()
 
 export function AboutDialog({ onClose }: { onClose: () => void }) {
   return (
-    <Dialog title="About ytdown" onClose={onClose}>
+    <Dialog title="About SnagOtter" onClose={onClose}>
       <div className="prose">
-        <p>ytdown is a free downloader for YouTube, Instagram, TikTok, X, Facebook and most other video sites. It has no accounts, ads or tracking.</p>
+        <p>SnagOtter is a free downloader for YouTube, Instagram, TikTok, X, Facebook and most other video sites. It has no accounts, ads or tracking.</p>
         <p>
-          The work happens in the ytdown engine, on your own computer or on a ytdown server, built on{" "}
+          The work happens in the SnagOtter engine, on your own computer or on a SnagOtter server, built on{" "}
           <a href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noreferrer">yt-dlp</a> and{" "}
           <a href="https://ffmpeg.org" target="_blank" rel="noreferrer">ffmpeg</a>. Links and files aren't kept: downloads are deleted from the engine within an hour.
           Your Recent list stays in this browser.
@@ -127,7 +127,7 @@ export function Banner({ doctor, online, onUpdated }: { doctor: Doctor | null; o
         <span className="bdot" aria-hidden="true" />
         <span className="btext">
           {busy === "updating" ? "Updating the engine… this takes about a minute." :
-            busy === "restart" ? "Updated. Restart ytdown to finish." :
+            busy === "restart" ? "Updated. Restart SnagOtter to finish." :
             busy === "failed" ? "The update didn't work. Check your connection and try again." : text}
         </span>
         {canFix && busy !== "restart" && (
@@ -165,13 +165,13 @@ export function ConnectEngine({ onRetry, checking }: { onRetry: () => void; chec
       <section className="connect" aria-labelledby="connect-h">
         <h1 id="connect-h">The download server isn't answering.</h1>
         <p className="lede">
-          This page uses the ytdown server at <span className="mono">{fallbackEngine()}</span>. It may be restarting
+          This page uses the SnagOtter server at <span className="mono">{fallbackEngine()}</span>. It may be restarting
           after an update, which takes about a minute.
         </p>
         <div className="row-actions">
           <button className="btn btn-1" onClick={onRetry} disabled={checking}>{checking ? "Checking…" : "Check again"}</button>
         </div>
-        <p className="help">Running ytdown on your own computer? Put its address in Settings.</p>
+        <p className="help">Running SnagOtter on your own computer? Put its address in Settings.</p>
       </section>
     );
   }
@@ -179,7 +179,7 @@ export function ConnectEngine({ onRetry, checking }: { onRetry: () => void; chec
     <section className="connect" aria-labelledby="connect-h">
       <h1 id="connect-h">Start the engine.</h1>
       <p className="lede">
-        ytdown downloads on your own computer, so sites see a normal home connection instead of a server.
+        SnagOtter downloads on your own computer, so sites see a normal home connection instead of a server.
         This page looks for the engine at <span className="mono">{fallbackEngine()}</span>, and it isn't answering.
       </p>
       {mobile ? (
@@ -189,7 +189,7 @@ export function ConnectEngine({ onRetry, checking }: { onRetry: () => void; chec
       ) : (
         <ol className="steps-list">
           <li>
-            <span>In the ytdown folder, start it. The first run installs what it needs:</span>
+            <span>In the SnagOtter folder, start it. The first run installs what it needs:</span>
             <CopyLine label="start" cmd={win ? ".\\start.ps1" : "./start.sh"} />
           </li>
           <li>
@@ -266,7 +266,7 @@ export function SettingsDialog({ doctor, onClose, onChanged }: { doctor: Doctor 
                 setMsg("Updating… this takes about a minute.");
                 try {
                   const r = await api.update(channel);
-                  setMsg(r.ok ? (r.restarting ? "Updated. The engine is restarting." : "Updated. Restart ytdown to finish.") : "The update didn't work.");
+                  setMsg(r.ok ? (r.restarting ? "Updated. The engine is restarting." : "Updated. Restart SnagOtter to finish.") : "The update didn't work.");
                 } catch (err) {
                   setMsg((err as Error).message);
                 } finally {

@@ -1,4 +1,4 @@
-/* ytdown design tokens: see ../DESIGN.md. Components use these names only.
+/* SnagOtter design tokens: see ../DESIGN.md. Components use these names only.
    Contrast checked with WCAG 2.2 formula (text ≥ 4.5:1, UI marks ≥ 3:1). */
 :root {
   color-scheme: light;

@@ -11,9 +11,9 @@ export default defineConfig({
       registerType: "autoUpdate",
       includeAssets: ["icon.svg", "apple-touch-icon.png"],
       manifest: {
-        name: "ytdown",
-        short_name: "ytdown",
-        description: "Paste a link, pick the exact format, download it. Runs on your own computer.",
+        name: "SnagOtter",
+        short_name: "SnagOtter",
+        description: "Free video and audio downloader for YouTube, Instagram, TikTok, Facebook and X.",
         id: "/",
         start_url: "/",
         scope: "/",

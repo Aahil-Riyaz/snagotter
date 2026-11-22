@@ -6,14 +6,14 @@ services:
       context: ..
       args:
         VITE_ENGINE_URL: ""          # the app is served by the engine itself: same origin
-        VITE_REPO_URL: ${YTDOWN_REPO_URL:-https://github.com/Aahil-Riyaz/ytdown}
+        VITE_REPO_URL: ${YTDOWN_REPO_URL:-https://github.com/Aahil-Riyaz/snagotter}
     image: ytdown:server
     container_name: ytdown
     restart: unless-stopped
     environment:
       YTDOWN_MODE: hosted
       YTDOWN_AUTOUPDATE: nightly
-      YTDOWN_ORIGINS: https://${YTDOWN_DOMAIN},https://ytdown-beta.vercel.app
+      YTDOWN_ORIGINS: https://${YTDOWN_DOMAIN},${YTDOWN_APP_ORIGINS:-https://snagotter.vercel.app,https://ytdown-beta.vercel.app}
       YTDOWN_TRUSTED_PROXIES: "*"   # only reachable through Caddy on the Docker network
       YTDOWN_CONCURRENCY: "2"
       YTDOWN_MAX_TEMP_GB: "20"

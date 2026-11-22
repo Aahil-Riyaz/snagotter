@@ -1,4 +1,4 @@
-# ytdown design system
+# SnagOtter design system
 
 The feel is a precise, calm tool, like a well-made Mac utility or a good audio app. The tool is the page. The memorable thing is **the link slot**: a large, tactile input that stamps the detected platform into its left edge as you paste. Everything else stays quiet and disciplined. The format table reads like a spec sheet.
 
