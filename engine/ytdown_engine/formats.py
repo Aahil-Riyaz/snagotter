@@ -5,7 +5,7 @@ Nothing here talks to the network; it is pure data shaping so it can be unit-tes
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from datetime import datetime
 
 from .urls import detect_platform
@@ -138,10 +138,13 @@ def _rank(f: dict) -> tuple:
     )
 
 
-def merge_container(codec: str, source_ext: str | None = None) -> str:
-    known = {"H.264": "mp4", "H.265": "mp4", "AV1": "webm", "VP9": "webm"}.get(codec)
-    if known:
-        return known
+def merge_container(codec: str, source_ext: str | None = None, audio: str | None = None) -> str:
+    # WebM only holds Opus/Vorbis audio. VP9/AV1 paired with AAC (Instagram, some X posts) goes in MP4,
+    # which holds both and plays on iPhones.
+    if codec in ("AV1", "VP9"):
+        return "webm" if audio in (None, "Opus", "Vorbis") else "mp4"
+    if codec in ("H.264", "H.265"):
+        return "mp4"
     return source_ext if source_ext in ("mp4", "webm") else "mkv"
 
 
@@ -241,7 +244,7 @@ def video_groups(formats: list[dict], duration: float | None, audio: list[dict])
                 "muxed": muxed,
                 "audio_id": comp["format_id"] if comp else None,
                 "audio_codec": audio_codec(f.get("acodec")) if muxed else (comp["codec"] if comp else None),
-                "container": (f.get("ext") or "mp4") if muxed else merge_container(codec, f.get("ext")),
+                "container": (f.get("ext") or "mp4") if muxed else merge_container(codec, f.get("ext"), comp["codec"] if comp else None),
                 "source_ext": f.get("ext"),
                 "tbr": round(f["tbr"]) if f.get("tbr") else None,
                 "size_av": av_size.json(),
@@ -395,6 +398,18 @@ def _fid(v: str | None, name: str) -> str | None:
     return v
 
 
+def safe_plan(plan: Plan, mode: str | None) -> Plan:
+    """A plan that almost always works: best available, in a container that holds any streams.
+    Keeps conversions, subtitles, trim and GIF; only the format choice and container change."""
+    if mode == "audio":
+        fmt, merge = "ba/b", None
+    elif mode == "video":
+        fmt, merge = "bv*/b", None
+    else:
+        fmt, merge = "bv*+ba/b", "mp4/mkv"
+    return replace(plan, format=fmt, merge_output_format=merge)
+
+
 def build_plan(req: dict) -> Plan:
     """req: mode, format_id?, audio_id?, muxed?, container?, max_height?, compat, convert?, options"""
     mode = req.get("mode")
@@ -424,7 +439,8 @@ def build_plan(req: dict) -> Plan:
         if compat:
             merge = "mp4"
         elif container in ("mp4", "webm", "mkv"):
-            merge = container
+            # The chosen container first; yt-dlp moves on if it can't hold this pair of streams.
+            merge = {"webm": "webm/mp4/mkv", "mp4": "mp4/mkv", "mkv": "mkv"}[container]
         else:
             merge = "mp4/webm/mkv"
         plan = Plan(fmt, merge, label=None)

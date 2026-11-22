@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import asyncio
 import os
+import re
 import shutil
 from urllib.parse import urlsplit
 import subprocess
@@ -17,7 +18,7 @@ import yt_dlp
 from yt_dlp.utils import DownloadCancelled, download_range_func
 
 from . import doctor, errors
-from .formats import Plan, build_plan, quality_label, short_side
+from .formats import Plan, build_plan, quality_label, safe_plan, short_side
 from .names import build_filename
 from .settings import Settings
 
@@ -79,6 +80,13 @@ class _QuietLogger:
 
     def error(self, msg: str) -> None:
         self.last_error = msg
+
+
+# Failures that come from the chosen format or from merging/converting it, not from the site itself.
+_FORMAT_TROUBLE = re.compile(
+    r"postprocessing|requested format is not available|merg|ffmpeg|conversion failed|invalid data found|"
+    r"could not write header|not currently supported in container|incorrect codec parameters|"
+    r"unable to (download|extract) .*format|fragment", re.I)
 
 
 def _site_of(url: str) -> str:
@@ -321,21 +329,38 @@ class JobManager:
                 "This is longer than this server allows." if (info.get("duration") or 0) > limit else None)
         return opts
 
+    @staticmethod
+    def _clear_dir(job: Job) -> None:
+        for p in job.dir.iterdir():
+            shutil.rmtree(p, ignore_errors=True) if p.is_dir() else p.unlink(missing_ok=True)
+
     def _run(self, job: Job) -> None:
         if job.cancel.is_set():
             return self._finish(job, "cancelled")
         self._set(job, "fetching")
         try:
             opts = self._ydl_opts(job)
-            for attempt in (1, 2):
+            retried_403 = used_safe = False
+            while True:
                 try:
                     with yt_dlp.YoutubeDL(opts) as ydl:
                         info = ydl.extract_info(job.url, download=True)
                         info = ydl.sanitize_info(info)
                     break
                 except yt_dlp.utils.DownloadError as e:
-                    # Signed media URLs sometimes expire or get a one-off 403; a fresh extraction fixes it.
-                    if attempt == 2 or job.cancel.is_set() or "403" not in str(e):
+                    if job.cancel.is_set():
+                        raise
+                    msg = f"{e}\n{opts['logger'].last_error or ''}"
+                    if "403" in msg and not retried_403:
+                        # Signed media URLs sometimes expire or get a one-off 403; a fresh extraction fixes it.
+                        retried_403 = True
+                    elif _FORMAT_TROUBLE.search(msg) and not used_safe:
+                        # The picked format couldn't be fetched or merged: fall back to whatever works best,
+                        # so pressing Download always gives the person a file.
+                        used_safe = True
+                        job.plan = safe_plan(job.plan, job.req.get("mode"))
+                        self._clear_dir(job)
+                    else:
                         raise
                     self._set(job, "fetching", percent=None)
                     opts = self._ydl_opts(job)

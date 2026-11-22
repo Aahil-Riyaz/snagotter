@@ -157,7 +157,7 @@ def test_playlist_entries():
 
 def test_plan_av_selected_pair():
     p = formats.build_plan({"mode": "av", "format_id": "299", "audio_id": "140", "container": "mp4"})
-    assert p.format.startswith("299+140/") and p.merge_output_format == "mp4"
+    assert p.format.startswith("299+140/") and p.merge_output_format == "mp4/mkv"
 
 
 def test_plan_compat_forces_mp4():
@@ -338,3 +338,24 @@ def test_proxy_password_hidden_in_errors():
     from ytdown_engine import errors
     p = errors.to_payload("network", "Unable to connect to proxy http://user:secret@1.2.3.4:8080")
     assert "secret" not in p["details"] and "[hidden]@" in p["details"]
+
+
+def test_vp9_with_aac_merges_to_mp4_and_safe_plan():
+    from ytdown_engine.formats import Plan, build_plan, merge_container, safe_plan
+    assert merge_container("VP9", "webm", "AAC") == "mp4"
+    assert merge_container("VP9", "webm", "Opus") == "webm"
+    assert merge_container("AV1", "mp4", "AAC") == "mp4"
+    assert merge_container("H.264", "mp4", "AAC") == "mp4"
+    p = build_plan({"mode": "av", "format_id": "1", "audio_id": "2", "container": "webm"})
+    assert p.merge_output_format == "webm/mp4/mkv"
+    s = safe_plan(p, "av")
+    assert s.format == "bv*+ba/b" and s.merge_output_format == "mp4/mkv"
+    a = safe_plan(build_plan({"mode": "audio", "convert": {"codec": "mp3", "bitrate": 320}}), "audio")
+    assert a.format == "ba/b" and a.postprocessors  # conversion kept
+
+
+def test_format_trouble_matches_merge_failures():
+    from ytdown_engine.jobs import _FORMAT_TROUBLE
+    assert _FORMAT_TROUBLE.search("ERROR: Postprocessing:   Stream #1:0 -> #0:1 (copy)")
+    assert _FORMAT_TROUBLE.search("Requested format is not available")
+    assert not _FORMAT_TROUBLE.search("Sign in to confirm you're not a bot")
