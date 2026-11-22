@@ -37,16 +37,18 @@ function homeStatic(): string {
 }
 
 const PAGE_CSS = `
-:root{--paper:#EEEDE8;--ink:#1B1A17;--ink-2:#4F4B43;--line:#D6D3CA;--accent:#FF5B1F;--accent-ink:#B8360A;color-scheme:light dark}
-@media (prefers-color-scheme:dark){:root{--paper:#171715;--ink:#ECEAE3;--ink-2:#AEAAA0;--line:#2E2D29;--accent:#FF6B30;--accent-ink:#FF8A5C}}
+:root{--paper:#F4F5F8;--surface:#FFFFFF;--ink:#12141A;--ink-2:#454B57;--line:#DCDFE5;--accent:#FFB020;--accent-ink:#8F5300;--soft:#FFF1D6;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{--paper:#0E1014;--surface:#171A21;--ink:#EDEFF3;--ink-2:#B4B9C3;--line:#262A33;--accent:#FFBA33;--accent-ink:#FFC95E;--soft:#2A2112}}
 *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 "Schibsted Grotesk",ui-sans-serif,system-ui,sans-serif}
 .wrap{max-width:720px;margin:0 auto;padding:20px 20px 48px}
 header{display:flex;justify-content:space-between;align-items:center;padding-bottom:16px;border-bottom:1px solid var(--line)}
-.mark{font-weight:700;color:var(--ink);text-decoration:none;font-size:18px}
-h1{font-size:clamp(28px,6vw,40px);line-height:1.1;letter-spacing:-.02em;margin:32px 0 12px}
+.mark{display:inline-flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.03em;color:var(--ink);text-decoration:none;font-size:20px}.mark img{width:32px;height:32px}
+.hero{display:grid;grid-template-columns:1fr 132px;gap:16px;align-items:center}.hero img{width:132px;height:132px;filter:drop-shadow(0 14px 16px rgba(70,35,0,.28))}
+@media (max-width:560px){.hero{grid-template-columns:1fr 84px}.hero img{width:84px;height:84px}}
+h1{font-size:clamp(32px,6.4vw,48px);line-height:1.04;font-weight:800;letter-spacing:-.035em;margin:32px 0 12px}
 h2{font-size:18px;margin:32px 0 8px}
 .lede{color:var(--ink-2);font-size:18px;margin:0 0 20px}
-.cta{display:inline-block;background:var(--accent);color:#1B1A17;font-weight:600;text-decoration:none;padding:12px 20px;border-radius:10px}
+.cta{display:inline-block;background:var(--accent);color:#17130A;font-weight:700;text-decoration:none;padding:14px 24px;border-radius:12px;box-shadow:0 8px 20px -10px rgba(255,160,0,.8)}
 ol,ul{padding-left:20px}li{margin:4px 0}
 dl{margin:0;border-top:1px solid var(--line)}dt{font-weight:600;padding-top:14px}dd{margin:4px 0 0;padding-bottom:14px;border-bottom:1px solid var(--line);color:var(--ink-2)}
 a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:14px;color:var(--ink-2)}
@@ -82,10 +84,10 @@ function sitePage(p: Page): string {
 <style>${PAGE_CSS}</style>
 ${data.map(ld).join("\n")}
 </head><body><div class="wrap">
-<header><a class="mark" href="/">${esc(geo.name)}</a><a href="/">Open the downloader</a></header>
+<header><a class="mark" href="/"><img src="/brand/otter-3d.png" alt="" width="32" height="32">${esc(geo.name)}</a><a href="/">Open the downloader</a></header>
 <main>
-<h1>${esc(p.h1)}</h1>
-<p class="lede">${esc(p.lede)}</p>
+<div class="hero"><div><h1>${esc(p.h1)}</h1>
+<p class="lede">${esc(p.lede)}</p></div><img src="/brand/otter-3d.png" alt="" width="132" height="132"></div>
 <a class="cta" href="/">Download from ${esc(p.site)}</a>
 <h2>How to download from ${esc(p.site)}</h2>
 <ol>${steps.map((s) => `<li>${esc(s)}</li>`).join("")}</ol>

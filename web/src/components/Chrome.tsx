@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Check, Copy, Moon, Settings, Sun, X } from "lucide-react";
 import { api, connect, fallbackEngine, remoteEngine, setSavedEngineUrl, type Doctor } from "../lib/api";
 import { getTheme, setTheme } from "../lib/store";
+import { Logo } from "./Brand";
 
 const I = { size: 18, strokeWidth: 1.5, "aria-hidden": true } as const;
 const REPO = import.meta.env.VITE_REPO_URL as string | undefined;
@@ -13,7 +14,7 @@ export function TopBar({ doctor, offline, onSettings }: { doctor: Doctor | null;
   return (
     <header className="top">
       <div className="wrap">
-        <a className="mark" href="/" aria-label="SnagOtter, start over">SnagOtter</a>
+        <a className="mark" href="/" aria-label="SnagOtter, start over"><Logo /></a>
         <div className="spacer" />
         <div className="status" role="status" aria-label={text}>
           <span className={`dot dot-${state}`} aria-hidden="true" />
@@ -76,6 +77,7 @@ export function AboutDialog({ onClose }: { onClose: () => void }) {
           Your Recent list stays in this browser.
         </p>
         <p>Only download content you have the right to use.</p>
+        <p className="small">Otter: Microsoft Fluent Emoji (MIT licence). Platform logos are trademarks of their owners, shown to say which sites work.</p>
         <p className="help">Made by Aahil Riyaz Beekay.</p>
       </div>
     </Dialog>

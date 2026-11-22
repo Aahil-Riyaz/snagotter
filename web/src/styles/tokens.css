@@ -1,27 +1,32 @@
 /* SnagOtter design tokens: see ../DESIGN.md. Components use these names only.
    Contrast checked with WCAG 2.2 formula (text ≥ 4.5:1, UI marks ≥ 3:1). */
+/* Palette: cool neutrals + one marigold accent (pairs with the otter, distinct from platform reds/blues).
+   Contrast (WCAG 2.2): ink 16.9:1, ink-2 8:1, ink-3 5.5:1, button text on accent 10:1, marks >= 3:1.
+   Shapes: buttons/inputs r-2 (12px), cards r-3 (20px), chips and pills full. */
 :root {
   color-scheme: light;
-  --paper: #EEEDE8;
-  --surface: #F8F7F3;
-  --sunken: #E4E2DB;
-  --line: #D6D3CA;
-  --line-strong: #858074;
-  --ink: #1B1A17;
-  --ink-2: #4F4B43;
-  --ink-3: #666157;
-  --accent: #FF5B1F;        /* primary button fill */
-  --accent-hover: #F04E12;
-  --accent-mark: #D9480F;   /* thin marks: progress fill, selected bar (≥3.3:1) */
-  --on-accent: #1B1A17;
-  --accent-ink: #B8360A;    /* accent as text */
-  --accent-wash: #FF5B1F14;
-  --ok: #2C6E47;
-  --warn: #7E5500;
-  --err: #A8231B;
-  --focus: #1B1A17;
-  --scrim: rgba(27, 26, 23, .82);
-  --shadow-pop: 0 1px 0 rgba(0,0,0,.04), 0 8px 24px -8px rgba(0,0,0,.18);
+  --paper: #F4F5F8;
+  --surface: #FFFFFF;
+  --sunken: #E9EBF0;
+  --line: #DCDFE5;
+  --line-strong: #858B96;
+  --ink: #12141A;
+  --ink-2: #454B57;
+  --ink-3: #5C6370;
+  --accent: #FFB020;        /* primary button fill */
+  --accent-hover: #FFA000;
+  --accent-mark: #A86500;   /* thin marks: progress fill, selected bar */
+  --on-accent: #17130A;
+  --accent-ink: #8F5300;    /* accent as text */
+  --accent-wash: #FFB0201F;
+  --accent-soft: #FFF1D6;
+  --ok: #1F7A4D;
+  --warn: #8A5A00;
+  --err: #B42318;
+  --focus: #12141A;
+  --scrim: rgba(18, 20, 26, .78);
+  --shadow-pop: 0 1px 0 rgba(18,20,26,.04), 0 12px 32px -12px rgba(18,20,26,.22);
+  --shadow-hero: 0 2px 0 rgba(18,20,26,.04), 0 24px 60px -24px rgba(60,40,0,.35);
 
   --font-ui: "Schibsted Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Menlo, monospace;
@@ -33,13 +38,15 @@
   --t-lg: 21px;   --lh-lg: 28px;
   --t-xl: 28px;   --lh-xl: 32px;
   --t-2xl: 40px;  --lh-2xl: 42px;
+  --t-3xl: 60px;  --lh-3xl: 62px;
 
   --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 20px; --s-6: 24px;
-  --s-8: 32px; --s-10: 40px; --s-12: 48px; --s-16: 64px;
+  --s-8: 32px; --s-10: 40px; --s-12: 48px; --s-16: 64px; --s-24: 96px;
 
-  --r-1: 3px; --r-2: 6px; --r-3: 8px;
+  --r-1: 6px; --r-2: 12px; --r-3: 20px; --r-pill: 999px;
 
   --ease: cubic-bezier(.2, .7, .2, 1);
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
   --d-fast: 120ms; --d-base: 180ms; --d-slow: 220ms;
 
   --target: 44px;
@@ -47,26 +54,28 @@
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --paper: #171715;
-  --surface: #1F1F1C;
-  --sunken: #121210;
-  --line: #2E2D29;
-  --line-strong: #75726A;
-  --ink: #ECEAE3;
-  --ink-2: #AEAAA0;
-  --ink-3: #8C887E;
-  --accent: #FF6B30;
-  --accent-hover: #FF7E4A;
-  --accent-mark: #FF6B30;
-  --on-accent: #171715;
-  --accent-ink: #FF8A57;
-  --accent-wash: #FF6B301A;
-  --ok: #6CC08D;
-  --warn: #E2B44A;
-  --err: #F07A6F;
-  --focus: #ECEAE3;
-  --scrim: rgba(18, 18, 16, .82);
-  --shadow-pop: 0 1px 0 rgba(0,0,0,.3), 0 8px 24px -8px rgba(0,0,0,.5);
+  --paper: #0E1014;
+  --surface: #171A21;
+  --sunken: #0A0B0E;
+  --line: #262A33;
+  --line-strong: #646B78;
+  --ink: #EDEFF3;
+  --ink-2: #B4B9C3;
+  --ink-3: #8E95A1;
+  --accent: #FFBA33;
+  --accent-hover: #FFC857;
+  --accent-mark: #FFBA33;
+  --on-accent: #17130A;
+  --accent-ink: #FFC95E;
+  --accent-wash: #FFBA3326;
+  --accent-soft: #2A2112;
+  --ok: #5CCB8F;
+  --warn: #F0B94A;
+  --err: #F58A80;
+  --focus: #EDEFF3;
+  --scrim: rgba(8, 9, 12, .82);
+  --shadow-pop: 0 1px 0 rgba(0,0,0,.3), 0 12px 32px -12px rgba(0,0,0,.6);
+  --shadow-hero: 0 2px 0 rgba(0,0,0,.3), 0 24px 60px -24px rgba(0,0,0,.7);
 }
 
 @media (max-width: 599px) {

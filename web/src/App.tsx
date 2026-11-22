@@ -4,8 +4,8 @@ import { prefs, recent, type RecentItem } from "./lib/store";
 import { PLATFORM_NAME, cx, detect, duration, isIOS, splitLinks } from "./lib/util";
 import { AboutDialog, Banner, ConnectEngine, Footer, SettingsDialog, TopBar } from "./components/Chrome";
 import { CookiesDialog, ErrorBlock } from "./components/Feedback";
-import { Faq } from "./components/Faq";
-import { Handles, JobFocus, Queue, Recent, type JobMeta } from "./components/Jobs";
+import { HeroArt, HeroHead, HomeSections, SiteRow } from "./components/Home";
+import { JobFocus, Queue, Recent, type JobMeta } from "./components/Jobs";
 import { LinkSlot } from "./components/Link";
 import { ListPicker, MediaHeader, PlaylistChoice, Skeleton, type ListQuality } from "./components/Media";
 import { AudioSheet, Controls, MoreOptions, SpecSheet, StickyBar, Summary, defaultSel, groupEnabled, pickVariant, resolve, type Sel } from "./components/Picker";
@@ -365,21 +365,23 @@ export default function App() {
   };
 
   const showSummary = !!(view.k === "single" && !focused && resolved && sel);
+  // Home: nothing loaded or downloading yet. Shows the hero, the otter and the sections below.
+  const home = !focused && (view.k === "idle" || view.k === "fetching" || view.k === "error");
 
   return (
     <>
       <a className="skip" href="#link">Skip to the link box</a>
       <TopBar doctor={doctor} offline={engine === "offline"} onSettings={() => setDialog("settings")} />
       <Banner doctor={doctor} online={online} onUpdated={(d) => { setDoctor(d); setEngine(d ? "ok" : "offline"); }} />
-      <main className={cx(showSummary && "has-sticky")}>
+      <main className={cx(showSummary && "has-sticky", home && "is-home")}>
         <div className="wrap grid">
           {engine === "offline" ? (
             <div className="work"><ConnectEngine onRetry={reconnect} checking={false} /></div>
           ) : (
             <div className="work">
-              <h1 className={cx((loaded || focused || view.k === "batch") && "sr")}>
-                {focused ? "Downloading" : loaded ? "Choose a format" : "Paste a link."}
-              </h1>
+              {home ? <HeroHead platform={platform} /> : (
+                <h1 className="sr">{focused ? "Downloading" : loaded ? "Choose a format" : "Your downloads"}</h1>
+              )}
               <LinkSlot
                 ref={inputRef}
                 value={text}
@@ -391,16 +393,18 @@ export default function App() {
                 onSubmit={submit}
                 onClear={clear}
               />
+              {home && <SiteRow platform={platform} />}
               {work()}
             </div>
           )}
           <aside className="rail" aria-label="Downloads">
             {showSummary && <Summary r={resolved!} onDownload={download} busy={starting} local={local} />}
             <Queue jobs={jobList} focus={focus} onFocus={setFocus} />
-            {!showSummary && view.k !== "list" && !focused && jobList.length === 0 && <><Handles /><Faq /></>}
-            {!showSummary && <Recent items={recentItems} onClear={() => setRecent(recent.clear())} onOpen={(u) => { setText(u); fetchInfo(u); }} />}
+            {home && jobList.length === 0 && <HeroArt />}
+            {!showSummary && !(home && recentItems.length === 0) && <Recent items={recentItems} onClear={() => setRecent(recent.clear())} onOpen={(u) => { setText(u); fetchInfo(u); }} />}
           </aside>
         </div>
+        {home && <HomeSections />}
         {showSummary && <StickyBar r={resolved!} onDownload={download} busy={starting} />}
       </main>
       <Footer doctor={doctor} onAbout={() => setDialog("about")} />

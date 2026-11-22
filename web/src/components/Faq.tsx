@@ -13,11 +13,6 @@ export function Faq() {
           </details>
         ))}
       </div>
-      <p className="faq-links">
-        {geo.pages.map((p, i) => (
-          <span key={p.slug}>{i > 0 && " · "}<a href={`/${p.slug}/`}>{p.site} downloader</a></span>
-        ))}
-      </p>
     </section>
   );
 }

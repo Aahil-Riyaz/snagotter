@@ -59,7 +59,7 @@ export const LinkSlot = forwardRef<HTMLInputElement, Props>(function LinkSlot(
           autoComplete="off"
           autoCapitalize="off"
           spellCheck={false}
-          placeholder="Link to a video, post or playlist"
+          placeholder="Paste a video, Reel or playlist link"
           value={value}
           aria-invalid={invalid || undefined}
           aria-describedby="link-help"
@@ -77,21 +77,24 @@ export const LinkSlot = forwardRef<HTMLInputElement, Props>(function LinkSlot(
               <X {...I} />
             </button>
           ) : (
-            <button type="button" className="btn btn-quiet" onClick={paste}>
+            // Empty box: Paste is the main action (a disabled Fetch would look broken).
+            <button type="button" className={cx("btn", primary ? "btn-1 btn-paste" : "btn-2")} onClick={paste}>
               <ClipboardPaste {...I} />
               Paste
             </button>
           )}
-          <button type="submit" className={cx("btn", primary ? "btn-1" : "btn-2")} disabled={busy || !value.trim()}>
-            {busy ? "Fetching…" : count > 1 ? `Queue ${count}` : "Fetch"}
-          </button>
+          {(value || !primary) && (
+            <button type="submit" className={cx("btn", primary ? "btn-1" : "btn-2")} disabled={busy || !value.trim()}>
+              {busy ? "Fetching…" : count > 1 ? `Queue ${count}` : "Fetch"}
+            </button>
+          )}
         </div>
       </form>
       <p id="link-help" className={cx("help", invalid && "help-err")} aria-live="polite">
         {hint ??
           (invalid
             ? "That doesn't look like a link. Paste a full address, like youtube.com/watch?v=…"
-            : "Paste several links, one per line, to queue them. Nothing you paste is stored or logged.")}
+            : primary ? "Tip: paste several links, one per line, to queue them." : "Paste several links, one per line, to queue them.")}
       </p>
     </div>
   );

@@ -11,3 +11,4 @@ cookies.txt
 .vercel
 deploy/.env
 deploy/secrets/
+.claude/
