@@ -77,6 +77,24 @@ The engine can't run on Vercel itself, for three reasons:
 
 ---
 
+## Run it 24/7 on a server
+
+`deploy/` runs ytdown in Docker behind an existing Caddy (for example next to n8n). The public instance runs this way at https://ytdown.aahil-auto.duckdns.org, and the Vercel app uses it through `VITE_ENGINE_URL`.
+
+```sh
+git clone https://github.com/Aahil-Riyaz/ytdown.git && cd ytdown
+YTDOWN_DOMAIN=ytdown.example.org CADDY_DIR=~/n8n sh deploy/install.sh
+```
+
+It runs in hosted mode (per-IP rate limit, size and length caps, no engine-update button). It updates yt-dlp on every start, and a daily job pulls this repo and restarts it.
+
+**YouTube and TikTok refuse most cloud servers** ("confirm you're not a bot"). X, Instagram posts and Reels, and most other sites work. To use YouTube and TikTok from a server, put a proxy with a residential or ISP address in `deploy/.env`. It's only used for the sites in `YTDOWN_PROXY_SITES`:
+```sh
+YTDOWN_PROXY=http://user:password@proxy-host:port
+YTDOWN_PROXY_SITES=youtube,tiktok
+```
+**Instagram Stories always need a login.** Export cookies.txt from a *spare* Instagram account into `deploy/secrets/cookies.txt`. They're used only for `YTDOWN_COOKIE_SITES` (default `instagram`). Don't use your main account: everyone using the server would act as that account. Re-run `deploy/install.sh` after changing either.
+
 ## What it does
 
 - **Three modes:** Video + audio, Video only, Audio only.
