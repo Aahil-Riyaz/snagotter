@@ -172,3 +172,10 @@
 .m0{top:-6px;left:-14px;animation-delay:-1s}.m1{top:-12px;right:4px;animation-delay:-3s}.m2{top:38%;right:-16px;animation-delay:-5s}
 .m3{bottom:-10px;right:10px;animation-delay:-2s}.m4{bottom:4px;left:-18px;animation-delay:-4s}
 @media (prefers-reduced-motion:reduce){.mini-b{animation:none}}
+
+/* Phone: drop the empty gap below the hero (logos keep their size). */
+@media (max-width:599px){
+  .is-home .grid{padding-bottom:var(--s-4)}
+  .is-home .rail{margin-top:0}
+  .demo{padding-top:var(--s-8)}
+}
