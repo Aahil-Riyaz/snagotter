@@ -21,7 +21,10 @@ export function HeroHead({ platform }: { platform: Platform | null }) {
   const site = known ?? SITES[i];
   return (
     <div className="hero-head">
-      <span className="hero-mini" aria-hidden="true"><img src={OTTER_SRC} alt="" width={88} height={88} decoding="async" /></span>
+      <span className="hero-mini" aria-hidden="true">
+        <img src={OTTER_SRC} alt="" width={88} height={88} decoding="async" />
+        {SITES.map((s, n) => <span key={s.id} className={`mini-b m${n}`}><SiteIcon site={s} size={14} /></span>)}
+      </span>
       <h1 className="hero-title">
         Snag any video from{" "}
         <span className="rot" aria-hidden="true">

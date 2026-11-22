@@ -165,3 +165,10 @@
   .perk-list li{scroll-snap-align:start;background:var(--surface);border-radius:var(--r-3);padding:var(--s-5)}
   .faq-sec{padding-top:var(--s-10);padding-bottom:var(--s-10)}
 }
+
+/* Small floating logos around the small otter (tablet/phone). Added only; nothing above changed. */
+.mini-b{position:absolute;width:26px;height:26px;border-radius:var(--r-pill);display:grid;place-items:center;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow-pop);animation:float 6.5s ease-in-out infinite}
+.mini-b svg{width:14px;height:14px}
+.m0{top:-6px;left:-14px;animation-delay:-1s}.m1{top:-12px;right:4px;animation-delay:-3s}.m2{top:38%;right:-16px;animation-delay:-5s}
+.m3{bottom:-10px;right:10px;animation-delay:-2s}.m4{bottom:4px;left:-18px;animation-delay:-4s}
+@media (prefers-reduced-motion:reduce){.mini-b{animation:none}}
