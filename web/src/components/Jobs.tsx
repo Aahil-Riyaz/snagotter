@@ -1,7 +1,8 @@
 import type { JobSnap } from "../lib/api";
 import { api } from "../lib/api";
 import type { RecentItem } from "../lib/store";
-import { PLATFORM_NAME, bytes, cx, duration, speed } from "../lib/util";
+import { useEffect, useState } from "react";
+import { PLATFORM_NAME, bytes, cx, duration, isIOS, mimeFor, speed } from "../lib/util";
 import { ErrorBlock } from "./Feedback";
 import { MiniHeader } from "./Media";
 
@@ -109,7 +110,10 @@ export function JobCard({ job, meta, local, onCancel, onAgain, onAction, autoSav
             {job.saved_to ? `Saved to ${job.saved_to}` : autoSaved ? `Sent to your browser's downloads${job.size ? `, ${bytes(job.size)}` : ""}.` : `${bytes(job.size)}, ready to save.`}
           </p>
           <div className="row-actions">
-            <a className="btn btn-1" href={api.fileUrl(job.id)} download={job.filename ?? true}>{autoSaved ? "Download again" : "Save file"}</a>
+            {isIOS() && <SaveToPhotos id={job.id} filename={job.filename} size={job.size} />}
+            <a className={cx("btn", isIOS() ? "btn-2" : "btn-1")} href={api.fileUrl(job.id)} download={job.filename ?? true}>
+              {isIOS() ? "Save to Files" : autoSaved ? "Download again" : "Save file"}
+            </a>
             {local && !job.saved_to && (
               <button className="btn btn-2" onClick={() => onAction("save")}>Save to the ytdown folder</button>
             )}
@@ -215,5 +219,39 @@ export function Handles() {
         {rows.map(([a, b]) => <li key={a}><b>{a}</b><span>{b}</span></li>)}
       </ul>
     </section>
+  );
+}
+
+/** iPhone: load the finished file, then one tap opens the share sheet, where "Save Video" puts it in Photos.
+ *  (Safari only allows sharing from a tap, so the file is fetched first and shared on the tap.) */
+function SaveToPhotos({ id, filename, size }: { id: string; filename: string | null; size: number | null }) {
+  const [file, setFile] = useState<File | null>(null);
+  const [state, setState] = useState<"loading" | "ready" | "fallback" | "done">("loading");
+  const video = mimeFor(filename).startsWith("video/");
+  useEffect(() => {
+    if (!navigator.canShare || (size ?? 0) > 1.5 * 1024 ** 3) { setState("fallback"); return; }
+    let live = true;
+    fetch(api.fileUrl(id))
+      .then((r) => (r.ok ? r.blob() : Promise.reject(r.status)))
+      .then((b) => {
+        if (!live) return;
+        const f = new File([b], filename ?? "video.mp4", { type: mimeFor(filename) });
+        if (navigator.canShare({ files: [f] })) { setFile(f); setState("ready"); } else setState("fallback");
+      })
+      .catch(() => live && setState("fallback"));
+    return () => { live = false; };
+  }, [id, filename, size]);
+  if (state === "fallback") return null;
+  const share = async () => {
+    if (!file) return;
+    try {
+      await navigator.share({ files: [file] });
+      setState("done");
+    } catch { /* closed the sheet */ }
+  };
+  return (
+    <button className="btn btn-1" onClick={share} disabled={state === "loading"}>
+      {state === "loading" ? "Preparing…" : state === "done" ? "Share again" : video ? "Save to Photos" : "Save or share"}
+    </button>
   );
 }

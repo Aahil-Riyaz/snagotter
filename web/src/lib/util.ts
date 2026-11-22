@@ -99,6 +99,17 @@ export function previewName(title: string, uploader: string | null, label: strin
   return `${head}${label ? ` (${label})` : ""}.${ext}`;
 }
 
+/** iPhone/iPad (iPadOS reports itself as a Mac with touch). Downloads there go to Files, not Photos. */
+export function isIOS(): boolean {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+}
+
+export function mimeFor(name: string | null | undefined): string {
+  const ext = (name ?? "").split(".").pop()?.toLowerCase();
+  return ({ mp4: "video/mp4", mov: "video/quicktime", webm: "video/webm", mkv: "video/x-matroska", gif: "image/gif",
+    m4a: "audio/mp4", mp3: "audio/mpeg", opus: "audio/ogg", ogg: "audio/ogg", flac: "audio/flac", wav: "audio/wav" } as Record<string, string>)[ext ?? ""] ?? "application/octet-stream";
+}
+
 export function cx(...c: (string | false | null | undefined)[]): string {
   return c.filter(Boolean).join(" ");
 }

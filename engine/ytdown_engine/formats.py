@@ -86,9 +86,11 @@ def _skip(f: dict) -> bool:
 def _is_video(f: dict) -> bool:
     if not _none(f.get("vcodec")):
         return True
-    # Some extractors leave vcodec unset on progressive files but give a height.
-    return (f.get("vcodec") is None and bool(f.get("height") or f.get("width"))
-            and f.get("ext") not in ("m4a", "mp3", "opus"))
+    # Some extractors leave vcodec unset on progressive files but give a height, or (Facebook) nothing
+    # at all except a video file type.
+    if f.get("vcodec") is not None or f.get("ext") in ("m4a", "mp3", "opus", "aac", "wav", "flac"):
+        return False
+    return bool(f.get("height") or f.get("width")) or f.get("ext") in ("mp4", "webm", "mov", "mkv", "flv", "3gp")
 
 
 def _has_audio(f: dict) -> bool:
@@ -215,6 +217,10 @@ def companion_audio(audio: list[dict], codec: str) -> dict | None:
 
 # ----------------------------------------------------------------------------- video
 
+_NAMELESS_LABEL = {"hd": "HD", "sd": "SD"}
+_NAMELESS_RANK = {"hd": 2, "sd": 1}
+
+
 def video_groups(formats: list[dict], duration: float | None, audio: list[dict]) -> list[dict]:
     buckets: dict[tuple, dict[str, dict]] = {}
     for f in formats:
@@ -224,13 +230,14 @@ def video_groups(formats: list[dict], duration: float | None, audio: list[dict])
         fps = round(f["fps"]) if f.get("fps") else None
         hdr = not _none(f.get("dynamic_range")) and f.get("dynamic_range") != "SDR"
         codec = video_codec(f.get("vcodec"))
-        key = (h or 0, fps or 0, hdr)
+        # No resolution reported (Facebook's "hd"/"sd"): keep each as its own row instead of merging them.
+        key = (h or 0, fps or 0, hdr, "" if h else str(f.get("format_id")))
         fam = buckets.setdefault(key, {})
         if codec not in fam or _rank(f) > _rank(fam[codec]):
             fam[codec] = f
 
     groups = []
-    for (h, fps, hdr), fam in buckets.items():
+    for (h, fps, hdr, nameless), fam in buckets.items():
         variants = []
         for codec, f in fam.items():
             muxed = _has_audio(f)
@@ -259,14 +266,14 @@ def video_groups(formats: list[dict], duration: float | None, audio: list[dict])
         variants.sort(key=lambda v: 0 if (v["codec"] == "Original" and v["muxed"]) else 1)
         best_tbr = max((v["tbr"] or 0) for v in variants)
         groups.append({
-            "key": f"{h}p{fps or ''}{'-hdr' if hdr else ''}",
+            "key": f"{h}p{fps or ''}{'-hdr' if hdr else ''}" if h else f"src-{nameless}",
             "height": h or None,
             "fps": fps or None,
             "hdr": hdr,
-            "label": quality_label(h or None),
+            "label": quality_label(h or None) if h else _NAMELESS_LABEL.get(nameless.lower(), "Source"),
             "res": f"{h}p" if h else None,
             "variants": variants,
-            "_sort": (h, fps, hdr, best_tbr),
+            "_sort": (h, fps, hdr, _NAMELESS_RANK.get(nameless.lower(), 0), best_tbr),
         })
     groups.sort(key=lambda g: g["_sort"], reverse=True)
     for i, g in enumerate(groups):

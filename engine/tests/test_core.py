@@ -367,3 +367,14 @@ def test_facebook_links():
     assert detect_platform("https://m.facebook.com/watch/?v=1") == "facebook"
     assert normalize("https://m.facebook.com/watch/?v=10153231379946729&mibextid=xyz") == "https://www.facebook.com/watch/?v=10153231379946729"
     assert normalize("fb.watch/abc123/") == "https://fb.watch/abc123/"
+
+
+def test_facebook_bare_formats_become_hd_and_sd():
+    from ytdown_engine.formats import build_media
+    info = {"id": "1", "title": "t", "extractor_key": "Facebook", "webpage_url": "https://www.facebook.com/x/videos/1/",
+            "formats": [{"format_id": "sd", "ext": "mp4", "url": "u", "protocol": "https"},
+                        {"format_id": "hd", "ext": "mp4", "url": "u", "protocol": "https"}]}
+    m = build_media(info, info["webpage_url"])
+    assert [g["label"] for g in m["video"]] == ["HD", "SD"]
+    v = m["video"][0]["variants"][0]
+    assert v["muxed"] and v["codec"] == "Original" and v["container"] == "mp4"

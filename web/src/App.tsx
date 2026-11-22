@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { api, connect, EngineError, watchJob, type ApiError, type Doctor, type JobRequest, type JobSnap, type ListMedia, type Media, type Platform, type SingleMedia } from "./lib/api";
 import { prefs, recent, type RecentItem } from "./lib/store";
-import { PLATFORM_NAME, cx, detect, duration, splitLinks } from "./lib/util";
+import { PLATFORM_NAME, cx, detect, duration, isIOS, splitLinks } from "./lib/util";
 import { AboutDialog, Banner, ConnectEngine, Footer, SettingsDialog, TopBar } from "./components/Chrome";
 import { CookiesDialog, ErrorBlock } from "./components/Feedback";
 import { Handles, JobFocus, Queue, Recent, type JobMeta } from "./components/Jobs";
@@ -36,6 +36,7 @@ export default function App() {
   const [dialog, setDialog] = useState<null | "settings" | "about" | "cookies">(null);
   const [listCompat, setListCompat] = useState(prefs.get().compat);
   const autoSaved = useRef(new Set<string>());
+  const seen = useRef(new Set<string>());
   const unsub = useRef(new Map<string, () => void>());
   const inputRef = useRef<HTMLInputElement>(null);
   const lastUrl = useRef<string>("");
@@ -78,15 +79,19 @@ export default function App() {
   // ---------------------------------------------------------------- jobs
   const onSnap = useCallback((s: JobSnap) => {
     setJobs((j) => ({ ...j, [s.id]: s }));
-    if (s.status === "ready" && !autoSaved.current.has(s.id)) {
-      autoSaved.current.add(s.id);
-      const a = document.createElement("a");
-      a.href = api.fileUrl(s.id);
-      a.download = s.filename ?? "";
-      a.rel = "noopener";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
+    if (s.status === "ready" && !autoSaved.current.has(s.id) && !seen.current.has(s.id)) {
+      seen.current.add(s.id);
+      // On iPhone a download lands in Files; the job card offers "Save to Photos" instead.
+      if (!isIOS()) {
+        autoSaved.current.add(s.id);
+        const a = document.createElement("a");
+        a.href = api.fileUrl(s.id);
+        a.download = s.filename ?? "";
+        a.rel = "noopener";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      }
       setRecent(recent.add({
         id: s.id, title: s.title ?? s.filename ?? s.url, url: s.url, platform: detect(s.url) ?? "other",
         filename: s.filename, size: s.size, at: Date.now(),
