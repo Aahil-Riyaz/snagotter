@@ -29,5 +29,5 @@ sudo docker exec "$CADDY_CONTAINER" caddy validate --config /etc/caddy/Caddyfile
 sudo docker exec "$CADDY_CONTAINER" caddy reload --config /etc/caddy/Caddyfile --adapter caddyfile
 
 CRON="17 4 * * * cd $REPO_DIR && git pull -q && YTDOWN_DOMAIN=$YTDOWN_DOMAIN sudo docker compose -f deploy/compose.yml --env-file deploy/.env up -d --build && sudo docker restart ytdown >/dev/null"
-( crontab -l 2>/dev/null | grep -v 'deploy/compose.yml' ; echo "$CRON" ) | crontab -
+{ crontab -l 2>/dev/null | grep -v 'deploy/compose.yml' || true; echo "$CRON"; } | crontab -
 echo "ytdown is starting at https://$YTDOWN_DOMAIN"
