@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ytdown: mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--paper);color:var(--ink);font-family:var(--font-ui);font-size:var(--t-base);line-height:var(--lh-base);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{margin:0;min-height:100dvh;display:flex;flex-direction:column}
+button,input{font:inherit;color:inherit}
+.mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+svg.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* ---------- frame ---------- */
+.wrap{width:100%;max-width:1328px;margin:0 auto;padding:0 var(--s-16)}
+.top{border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:var(--s-6);height:56px}
+.mark{font-weight:700;font-size:var(--t-md);letter-spacing:-.03em}
+.top .spacer{flex:1}
+.status{display:flex;align-items:center;gap:var(--s-2);font-size:var(--t-sm);color:var(--ink-2)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--ok)}
+.iconbtn{display:inline-grid;place-items:center;width:var(--target);height:var(--target);border:0;background:none;border-radius:var(--r-2);color:var(--ink-2);cursor:pointer;transition:background var(--d-fast) var(--ease),color var(--d-fast) var(--ease)}
+.iconbtn:hover{background:var(--sunken);color:var(--ink)}
+
+main{flex:1}
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--s-6);padding-top:var(--s-12);padding-bottom:var(--s-16)}
+.work{grid-column:1 / span 8;min-width:0}
+.rail{grid-column:9 / span 4;min-width:0;padding-left:var(--s-8)}
+
+h1{font-size:var(--t-2xl);line-height:var(--lh-2xl);letter-spacing:-.025em;font-weight:600;margin:0 0 var(--s-6)}
+h2{font-size:var(--t-base);line-height:var(--lh-base);font-weight:600;margin:0}
+.help{color:var(--ink-3);font-size:var(--t-sm);line-height:var(--lh-sm);margin:var(--s-3) 0 0}
+
+/* ---------- link slot (the hero) ---------- */
+.slot{display:flex;align-items:stretch;height:64px;background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--r-2);transition:box-shadow var(--d-fast) var(--ease)}
+.slot:focus-within{box-shadow:0 0 0 2px var(--paper),0 0 0 4px var(--focus)}
+.stamp{display:flex;align-items:center;padding:0 var(--s-4);border-right:1px solid var(--line);font-size:var(--t-sm);font-weight:500;color:var(--ink-3);min-width:104px;white-space:nowrap}
+.stamp.on{color:var(--ink)}
+.stamp.on::before{content:"";width:6px;height:6px;border-radius:1px;background:var(--ink);margin-right:var(--s-2)}
+.slot input{flex:1;min-width:0;border:0;background:none;padding:0 var(--s-4);font-size:var(--t-md);outline:none}
+.slot input::placeholder{color:var(--ink-3)}
+.slot .acts{display:flex;align-items:center;gap:var(--s-2);padding:0 var(--s-2)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--s-2);min-height:var(--target);padding:0 var(--s-4);border-radius:var(--r-2);font-weight:500;font-size:var(--t-base);cursor:pointer;border:1px solid transparent;white-space:nowrap;transition:background var(--d-fast) var(--ease),transform var(--d-fast) var(--ease)}
+.btn:active{transform:translateY(1px)}
+.btn-quiet{background:none;color:var(--ink-2)}
+.btn-quiet:hover{background:var(--sunken);color:var(--ink)}
+.btn-2{background:var(--surface);border-color:var(--line-strong);color:var(--ink)}
+.btn-2:hover{background:var(--sunken)}
+.btn-1{background:var(--accent);color:var(--on-accent);font-weight:600;border-color:var(--accent-mark)}
+:root[data-theme="dark"] .btn-1{border-color:var(--accent)}
+.btn-1:hover{background:var(--accent-hover)}
+.btn-1.big{min-height:52px;font-size:var(--t-md);width:100%;white-space:normal;text-align:center;padding:var(--s-2) var(--s-4)}
+kbd{font-family:var(--font-mono);font-size:var(--t-xs);padding:1px 5px;border:1px solid var(--line-strong);border-bottom-width:2px;border-radius:var(--r-1);color:var(--ink-2);background:var(--surface)}
+
+.keys{display:flex;flex-wrap:wrap;gap:var(--s-5);margin-top:var(--s-10);color:var(--ink-3);font-size:var(--t-sm)}
+.keys span{display:inline-flex;align-items:center;gap:6px}
+
+/* ---------- rail: what it handles ---------- */
+.rail section+section{margin-top:var(--s-10)}
+.rail h2{margin-bottom:var(--s-3)}
+.handles{margin:0;padding:0;list-style:none;border-top:1px solid var(--line)}
+.handles li{display:grid;grid-template-columns:84px 1fr;gap:var(--s-3);padding:var(--s-3) 0;border-bottom:1px solid var(--line);font-size:var(--t-sm);line-height:var(--lh-sm)}
+.handles li b{font-weight:500}
+.handles li span{color:var(--ink-2)}
+.empty-note{color:var(--ink-3);font-size:var(--t-sm);line-height:var(--lh-sm);margin:0;padding:var(--s-4);border:1px dashed var(--line-strong);border-radius:var(--r-2)}
+
+/* ---------- media header ---------- */
+.media{display:grid;grid-template-columns:264px 1fr;gap:var(--s-6);margin-top:var(--s-8);align-items:start}
+.thumb{position:relative;aspect-ratio:16/9;border-radius:var(--r-3);overflow:hidden;border:1px solid var(--line);background:var(--sunken)}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.dur{position:absolute;right:6px;bottom:6px;background:var(--scrim);color:var(--paper);font-size:var(--t-xs);line-height:var(--lh-xs);padding:2px 6px;border-radius:var(--r-1)}
+:root[data-theme="dark"] .dur{color:var(--ink)}
+.title{font-size:var(--t-lg);line-height:var(--lh-lg);font-weight:600;letter-spacing:-.015em;margin:0 0 var(--s-3);overflow-wrap:anywhere}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:2px var(--s-5);margin:0;font-size:var(--t-sm);line-height:var(--lh-sm)}
+.facts dt{color:var(--ink-3)}
+.facts dd{margin:0}
+
+/* ---------- controls ---------- */
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s-4) var(--s-6);margin-top:var(--s-8)}
+.seg{display:inline-grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--sunken);border-radius:var(--r-2);padding:3px}
+.seg button{min-height:38px;padding:0 var(--s-4);border:1px solid transparent;border-radius:4px;background:none;color:var(--ink-2);font-size:var(--t-base);font-weight:500;cursor:pointer;white-space:nowrap}
+.seg button[aria-checked="true"]{background:var(--surface);border-color:var(--line);color:var(--ink)}
+.toggle{border:0;background:none;padding:0;display:inline-flex;align-items:center;gap:var(--s-3);cursor:pointer;font-weight:500;min-height:var(--target)}
+.track{position:relative;width:36px;height:20px;border-radius:10px;background:var(--line-strong);transition:background var(--d-base) var(--ease)}
+.track::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--surface);transition:transform var(--d-base) var(--ease)}
+.toggle[aria-checked="true"] .track{background:var(--ink)}
+.toggle[aria-checked="true"] .track::after{transform:translateX(16px)}
+.explain{flex-basis:100%;margin:calc(var(--s-2) * -1) 0 0;color:var(--ink-3);font-size:var(--t-sm);line-height:var(--lh-sm);max-width:68ch}
+
+/* ---------- spec sheet ---------- */
+.sheet{margin-top:var(--s-5);background:var(--surface);border:1px solid var(--line);border-radius:var(--r-3);overflow:hidden}
+.row{display:grid;grid-template-columns:132px 52px 1fr 88px 100px;align-items:center;column-gap:var(--s-4);min-height:48px;padding:0 var(--s-5) 0 var(--s-5);border-top:1px solid var(--line);position:relative;cursor:pointer;transition:background var(--d-fast) var(--ease)}
+.row:first-child{border-top:0}
+.row.head{min-height:38px;cursor:default;color:var(--ink-2);font-size:var(--t-sm);background:var(--paper)}
+.row:not(.head):not(.off):hover{background:color-mix(in srgb,var(--sunken) 55%,transparent)}
+.row.sel{background:var(--accent-wash)}
+.row.sel:hover{background:var(--accent-wash)}
+.row.sel::before{content:"";position:absolute;left:0;top:-1px;bottom:0;width:3px;background:var(--accent-mark)}
+.row.off{cursor:not-allowed;color:var(--ink-3)}
+.q{display:flex;align-items:center;gap:var(--s-2);font-weight:600}
+.q .mono{font-weight:500}
+.badge{font-family:var(--font-ui);font-size:var(--t-xs);line-height:var(--lh-xs);font-weight:500;padding:1px 6px;border:1px solid var(--ink);border-radius:var(--r-1)}
+.badge.hdr{border-color:var(--line-strong);color:var(--ink-2)}
+.row.off .badge{border-color:var(--line-strong);color:var(--ink-3)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-family:var(--font-mono);font-size:var(--t-sm);line-height:var(--lh-sm);padding:4px 8px;border:1px solid var(--line);border-radius:var(--r-1);color:var(--ink-2);background:none;cursor:pointer}
+.chip[aria-checked="true"]{border-color:var(--ink);color:var(--ink);font-weight:500}
+.chip:disabled{color:var(--ink-3);border-style:dashed;cursor:not-allowed;opacity:.8}
+.sz{text-align:right}
+.approx{color:var(--warn)}
+.note{grid-column:1 / -1;font-size:var(--t-sm);padding:var(--s-3) var(--s-5);border-top:1px solid var(--line);color:var(--ink-2);background:var(--paper)}
+.more{display:flex;align-items:center;gap:var(--s-2);margin-top:var(--s-5);background:none;border:0;padding:0;min-height:var(--target);color:var(--ink-2);font-weight:500;cursor:pointer}
+.more:hover{color:var(--ink)}
+
+/* ---------- rail: summary ---------- */
+.summary{position:sticky;top:var(--s-8);border:1px solid var(--line);border-radius:var(--r-3);background:var(--surface);padding:var(--s-5)}
+.summary dl{display:grid;grid-template-columns:auto 1fr;gap:var(--s-2) var(--s-4);margin:var(--s-4) 0 var(--s-5);font-size:var(--t-sm);line-height:var(--lh-sm)}
+.summary dt{color:var(--ink-3)}
+.summary dd{margin:0;text-align:right}
+.fname{font-family:var(--font-mono);font-size:var(--t-sm);line-height:var(--lh-sm);padding:var(--s-3);background:var(--sunken);border-radius:var(--r-2);overflow-wrap:anywhere;margin:var(--s-2) 0 0}
+.small{font-size:var(--t-sm);line-height:var(--lh-sm);color:var(--ink-3);margin:var(--s-3) 0 0}
+
+/* ---------- downloading ---------- */
+.mini{display:grid;grid-template-columns:120px 1fr;gap:var(--s-4);align-items:center;margin-top:var(--s-8)}
+.mini .title{font-size:var(--t-md);line-height:var(--lh-md);margin:0 0 2px}
+.mini .sub{font-size:var(--t-sm);color:var(--ink-2)}
+.job{margin-top:var(--s-6);border:1px solid var(--line);border-radius:var(--r-3);background:var(--surface);padding:var(--s-6)}
+.job-head{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s-4)}
+.job-head h2{font-size:var(--t-md);line-height:var(--lh-md)}
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--s-2);margin:var(--s-6) 0 0;padding:0;list-style:none;counter-reset:s}
+.steps li{counter-increment:s;font-size:var(--t-sm);line-height:var(--lh-sm);color:var(--ink-3);padding-top:var(--s-3);border-top:2px solid var(--line);display:flex;gap:6px;align-items:center}
+.steps li::before{content:counter(s);font-family:var(--font-mono);font-size:var(--t-xs)}
+.steps li.done{color:var(--ink-2);border-top-color:var(--ink-2)}
+.steps li.done::before{content:"✓";font-family:var(--font-ui)}
+.steps li.now{color:var(--ink);font-weight:600;border-top-color:var(--accent-mark)}
+.bar{height:4px;background:var(--sunken);border-radius:2px;overflow:hidden;margin-top:var(--s-8)}
+.bar i{display:block;height:100%;width:62.4%;background:var(--accent-mark);transition:width 250ms linear}
+.readout{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-8);margin-top:var(--s-3);font-size:var(--t-sm);line-height:var(--lh-sm)}
+.readout span{color:var(--ink-3)}
+.readout b{font-weight:500;color:var(--ink);margin-right:6px}
+.pct{font-size:var(--t-xl);line-height:var(--lh-xl);font-weight:500;letter-spacing:-.02em}
+.job-foot{display:flex;justify-content:space-between;align-items:center;gap:var(--s-4);margin-top:var(--s-6);padding-top:var(--s-5);border-top:1px solid var(--line)}
+.queue{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.queue li{padding:var(--s-3) 0;border-bottom:1px solid var(--line);font-size:var(--t-sm);line-height:var(--lh-sm)}
+.queue .u{font-family:var(--font-mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+.queue .st{color:var(--ink-3)}
+.queue .now .st{color:var(--accent-ink)}
+.minibar{height:2px;background:var(--sunken);margin-top:6px}
+.minibar i{display:block;height:100%;width:62%;background:var(--accent-mark)}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);font-size:var(--t-sm);line-height:var(--lh-sm);color:var(--ink-3)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-6);align-items:center;padding-top:var(--s-5);padding-bottom:calc(var(--s-5) + env(safe-area-inset-bottom))}
+footer a{color:var(--ink-2);text-decoration:none}
+footer a:hover{text-decoration:underline}
+footer .by{color:var(--ink-2)}
+footer .grow{flex:1}
+
+.screen{display:none}
+.screen.on{display:contents}
+.sticky{display:none}
+
+/* ---------- tablet ---------- */
+@media (max-width:1023px){
+  .wrap{padding:0 var(--s-8)}
+  .work,.rail{grid-column:1 / -1}
+  .rail{margin-top:var(--s-12);padding-left:0}
+  .summary{position:static}
+}
+/* ---------- mobile ---------- */
+@media (max-width:599px){
+  .wrap{padding:0 var(--s-4)}
+  .grid{padding-top:var(--s-8);padding-bottom:var(--s-10)}
+  h1{font-size:var(--t-xl);line-height:var(--lh-xl);letter-spacing:-.02em;margin-bottom:var(--s-4)}
+  .status .txt{display:none}
+  .slot{flex-wrap:wrap;height:auto}
+  .stamp{min-width:0;border-right:0;padding:var(--s-3) var(--s-4) 0;width:100%}
+  .slot input{height:48px;font-size:17px;width:100%;flex-basis:100%}
+  .slot .acts{width:100%;padding:0 var(--s-2) var(--s-2);gap:var(--s-2)}
+  .slot .acts .btn-1,.slot .acts .btn-2{flex:1}
+  .keys{display:none}
+  .media{grid-template-columns:1fr;gap:var(--s-4);margin-top:var(--s-6)}
+  .controls{margin-top:var(--s-6)}
+  .seg{width:100%}
+  .seg button{padding:0 var(--s-2);min-height:40px}
+  .row.head{display:none}
+  .row{grid-template-columns:1fr auto;grid-template-areas:"q sz" "c c";row-gap:var(--s-2);padding:var(--s-3) var(--s-4) var(--s-3) var(--s-5);min-height:64px}
+  .row .q{grid-area:q}.row .sz{grid-area:sz}.row .chips{grid-area:c}
+  .row .fps,.row .ct{display:none}
+  .row .q .fpsm{display:inline}
+  .note{padding:var(--s-3) var(--s-4)}
+  .screen-info .rail{display:none}
+  .sticky{display:flex;position:sticky;bottom:0;z-index:5;align-items:center;gap:var(--s-3);padding:var(--s-3) var(--s-4) calc(var(--s-3) + env(safe-area-inset-bottom));background:var(--paper);border-top:1px solid var(--line)}
+  .sticky .what{flex:1;min-width:0;font-size:var(--t-sm);line-height:var(--lh-sm)}
+  .sticky .what b{display:block;font-weight:600;font-size:var(--t-base)}
+  .sticky .btn-1{min-height:48px}
+  .mini{grid-template-columns:96px 1fr}
+  .job{padding:var(--s-4)}
+  .steps{grid-template-columns:repeat(5,1fr)}
+  .steps li{font-size:var(--t-xs);flex-direction:column;align-items:flex-start;gap:2px}
+  .readout{gap:var(--s-2) var(--s-5)}
+  .job-foot{flex-direction:column;align-items:stretch}
+  .job-foot .btn{width:100%}
+  footer .wrap{display:grid;grid-template-columns:1fr auto auto;gap:var(--s-2) var(--s-4)}
+  footer .wrap>span{grid-column:1 / -1}
+  footer .by{grid-column:1 / 2 !important}
+}
+.fpsm{display:none;color:var(--ink-2);font-weight:500;margin-left:calc(var(--s-2) * -1)}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="mark">ytdown</div>
+    <div class="spacer"></div>
+    <div class="status" role="status"><span class="sr">Engine ready</span><span class="dot" aria-hidden="true"></span><span class="txt" aria-hidden="true">Engine ready</span><span class="mono txt">2026.10.26</span></div>
+    <button class="iconbtn" id="themeBtn" aria-label="Switch to dark theme">
+      <svg class="i" viewBox="0 0 24 24" id="themeIcon"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+<!-- ============ EMPTY ============ -->
+<div class="screen screen-empty" data-screen="empty">
+<div class="wrap grid">
+  <div class="work">
+    <h1>Paste a link.</h1>
+    <div class="slot">
+      <span class="stamp" aria-live="polite">Link</span>
+      <label for="u1" class="sr">Media link</label>
+      <input id="u1" type="url" inputmode="url" autocomplete="off" placeholder="Link to a video, post or playlist">
+      <div class="acts">
+        <button class="btn btn-quiet"><svg class="i" viewBox="0 0 24 24"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>Paste</button>
+        <button class="btn btn-1">Fetch</button>
+      </div>
+    </div>
+    <p class="help">Paste several links, one per line, to queue them. Files are fetched by the engine on your computer, and nothing is uploaded or logged.</p>
+    <div class="keys" aria-label="Keyboard shortcuts">
+      <span><kbd>Ctrl</kbd><kbd>V</kbd> pastes from anywhere</span>
+      <span><kbd>Enter</kbd> fetches formats</span>
+      <span><kbd>↑</kbd><kbd>↓</kbd> choose a format</span>
+      <span><kbd>D</kbd> downloads</span>
+    </div>
+  </div>
+  <aside class="rail">
+    <section>
+      <h2>What it handles</h2>
+      <ul class="handles">
+        <li><b>YouTube</b><span>Videos, Shorts, Music, finished live streams, playlists</span></li>
+        <li><b>Instagram</b><span>Reels, posts, carousels</span></li>
+        <li><b>TikTok</b><span>Videos and short links, without watermark when available</span></li>
+        <li><b>X</b><span>Videos and GIFs, including posts with several</span></li>
+        <li><b>Other</b><span>Most sites yt-dlp supports</span></li>
+      </ul>
+    </section>
+    <section>
+      <h2>Recent</h2>
+      <p class="empty-note">Downloads you finish show up here. The list stays in this browser.</p>
+    </section>
+  </aside>
+</div>
+</div>
+
+<!-- ============ INFO + FORMATS ============ -->
+<div class="screen screen-info" data-screen="info">
+<div class="wrap grid">
+  <div class="work">
+    <h1 class="sr">Choose a format</h1>
+    <div class="slot">
+      <span class="stamp on" aria-live="polite">YouTube</span>
+      <label for="u2" class="sr">Media link</label>
+      <input id="u2" type="url" value="https://www.youtube.com/watch?v=aqz-KE-bpKQ">
+      <div class="acts">
+        <button class="btn btn-quiet" aria-label="Clear link"><svg class="i" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+        <button class="btn btn-2">Fetch</button>
+      </div>
+    </div>
+
+    <div class="media">
+      <div class="thumb"><img src="https://i.ytimg.com/vi/aqz-KE-bpKQ/maxresdefault.jpg" alt="" onerror="this.remove()"><span class="dur mono">10:34</span></div>
+      <div>
+        <p class="title" dir="auto">Big Buck Bunny 60fps 4K: Official Blender Foundation Short Film</p>
+        <dl class="facts">
+          <dt>Channel</dt><dd>Blender</dd>
+          <dt>Length</dt><dd class="mono">10:34</dd>
+          <dt>Uploaded</dt><dd>10 Nov 2014</dd>
+          <dt>Best</dt><dd>4K at 60 fps</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="seg" role="radiogroup" aria-label="What to download">
+        <button role="radio" aria-checked="true">Video + audio</button>
+        <button role="radio" aria-checked="false">Video only</button>
+        <button role="radio" aria-checked="false">Audio only</button>
+      </div>
+      <button class="toggle" role="switch" aria-checked="true"><span class="track" aria-hidden="true"></span>Plays everywhere</button>
+      <p class="explain">H.264 video with AAC audio in an MP4 plays on any phone, TV or editor. YouTube only offers H.264 up to 1080p, so 4K and 2K need this off.</p>
+    </div>
+
+    <div class="sheet" role="radiogroup" aria-label="Video quality">
+      <div class="row head" aria-hidden="true"><span>Quality</span><span>fps</span><span>Codec</span><span>Container</span><span class="sz">Size</span></div>
+      <div class="row off" role="radio" aria-checked="false" aria-disabled="true">
+        <span class="q">4K <span class="mono">2160p</span><span class="fpsm mono">60</span><span class="badge">Best</span></span>
+        <span class="mono fps">60</span>
+        <span class="chips"><button class="chip" disabled>AV1</button><button class="chip" disabled>VP9</button></span>
+        <span class="mono ct">MKV</span>
+        <span class="mono sz">1.20 GB</span>
+      </div>
+      <div class="row off" role="radio" aria-checked="false" aria-disabled="true">
+        <span class="q">2K <span class="mono">1440p</span><span class="fpsm mono">60</span></span>
+        <span class="mono fps">60</span>
+        <span class="chips"><button class="chip" disabled>AV1</button><button class="chip" disabled>VP9</button></span>
+        <span class="mono ct">MKV</span>
+        <span class="mono sz">624 MB</span>
+      </div>
+      <div class="row sel" role="radio" aria-checked="true" tabindex="0">
+        <span class="q"><span class="mono">1080p</span><span class="fpsm mono">60</span></span>
+        <span class="mono fps">60</span>
+        <span class="chips" role="radiogroup" aria-label="Codec for 1080p"><button class="chip" disabled>AV1</button><button class="chip" disabled>VP9</button><button class="chip" role="radio" aria-checked="true">H.264</button></span>
+        <span class="mono ct">MP4</span>
+        <span class="mono sz">486 MB</span>
+      </div>
+      <div class="row" role="radio" aria-checked="false" tabindex="-1">
+        <span class="q"><span class="mono">720p</span><span class="fpsm mono">60</span></span>
+        <span class="mono fps">60</span>
+        <span class="chips"><button class="chip" disabled>AV1</button><button class="chip" disabled>VP9</button><button class="chip" role="radio" aria-checked="true">H.264</button></span>
+        <span class="mono ct">MP4</span>
+        <span class="mono sz"><span class="approx" title="Estimated from bitrate">≈</span> 261 MB</span>
+      </div>
+      <div class="row" role="radio" aria-checked="false" tabindex="-1">
+        <span class="q"><span class="mono">480p</span><span class="fpsm mono">30</span></span>
+        <span class="mono fps">30</span>
+        <span class="chips"><button class="chip" disabled>AV1</button><button class="chip" disabled>VP9</button><button class="chip" role="radio" aria-checked="true">H.264</button></span>
+        <span class="mono ct">MP4</span>
+        <span class="mono sz">89 MB</span>
+      </div>
+      <div class="row" role="radio" aria-checked="false" tabindex="-1">
+        <span class="q"><span class="mono">360p</span><span class="fpsm mono">30</span></span>
+        <span class="mono fps">30</span>
+        <span class="chips"><button class="chip" disabled>AV1</button><button class="chip" disabled>VP9</button><button class="chip" role="radio" aria-checked="true">H.264</button></span>
+        <span class="mono ct">MP4</span>
+        <span class="mono sz">51 MB</span>
+      </div>
+      <div class="note">Sizes include the audio track (AAC, 128 kbps). <span class="approx">≈</span> means estimated from bitrate.</div>
+    </div>
+
+    <button class="more" aria-expanded="false"><svg class="i" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>More options: subtitles, thumbnail, trim</button>
+  </div>
+
+  <aside class="rail">
+    <div class="summary">
+      <h2>Your file</h2>
+      <p class="fname">Big Buck Bunny 60fps 4K: Official Blender Foundation Short Film — Blender (1080p).mp4</p>
+      <dl>
+        <dt>Video</dt><dd class="mono">H.264 · 1080p60</dd>
+        <dt>Audio</dt><dd class="mono">AAC · 128 kbps</dd>
+        <dt>Size</dt><dd class="mono">486 MB</dd>
+        <dt>Re-encoding</dt><dd>None</dd>
+      </dl>
+      <button class="btn btn-1 big">Download 1080p MP4 · 486 MB</button>
+      <p class="small">Saves to your browser's downloads.</p>
+    </div>
+  </aside>
+</div>
+<div class="sticky">
+  <div class="what"><b>1080p60 MP4</b><span class="mono">H.264 + AAC</span></div>
+  <button class="btn btn-1">Download · 486 MB</button>
+</div>
+</div>
+
+<!-- ============ DOWNLOADING ============ -->
+<div class="screen screen-dl" data-screen="downloading">
+<div class="wrap grid">
+  <div class="work">
+    <h1 class="sr">Downloading</h1>
+    <div class="slot">
+      <span class="stamp">Link</span>
+      <label for="u3" class="sr">Media link</label>
+      <input id="u3" type="url" placeholder="Paste another link to add it to the queue">
+      <div class="acts"><button class="btn btn-quiet"><svg class="i" viewBox="0 0 24 24"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>Paste</button><button class="btn btn-2">Fetch</button></div>
+    </div>
+
+    <div class="mini">
+      <div class="thumb"><img src="https://i.ytimg.com/vi/aqz-KE-bpKQ/mqdefault.jpg" alt="" onerror="this.remove()"></div>
+      <div>
+        <p class="title" dir="auto">Big Buck Bunny 60fps 4K: Official Blender Foundation Short Film</p>
+        <div class="sub">Blender, <span class="mono">10:34</span></div>
+      </div>
+    </div>
+
+    <section class="job" aria-labelledby="jobh">
+      <div class="job-head">
+        <h2 id="jobh">Downloading video</h2>
+        <span class="mono" style="color:var(--ink-2);font-size:var(--t-sm)">1080p60 MP4</span>
+      </div>
+      <ol class="steps" aria-label="Stages">
+        <li class="done">Fetch</li>
+        <li class="now" aria-current="step">Video</li>
+        <li>Audio</li>
+        <li>Merge</li>
+        <li>Ready</li>
+      </ol>
+      <div class="bar" role="progressbar" aria-label="Video download" aria-valuemin="0" aria-valuemax="100" aria-valuenow="62.4"><i></i></div>
+      <div class="readout mono" aria-live="polite">
+        <div class="pct">62.4%</div>
+      </div>
+      <div class="readout mono">
+        <div><b>297 / 476 MB</b><span>downloaded</span></div>
+        <div><b>8.1 MB/s</b><span>speed</span></div>
+        <div><b>0:22</b><span>left</span></div>
+      </div>
+      <div class="job-foot">
+        <p class="small" style="margin:0">Merging is a remux: the video is copied, not re-encoded.</p>
+        <button class="btn btn-2">Cancel download</button>
+      </div>
+    </section>
+  </div>
+
+  <aside class="rail">
+    <section>
+      <h2>Queue</h2>
+      <ul class="queue">
+        <li class="now"><span class="u">youtube.com/watch?v=aqz-KE-bpKQ</span><span class="st">Downloading video</span><div class="minibar"><i></i></div></li>
+        <li><span class="u">tiktok.com/@nasa/video/7…</span><span class="st">Waiting, 2nd in line</span></li>
+        <li><span class="u">x.com/NASA/status/1…</span><span class="st">Waiting, 3rd in line</span></li>
+      </ul>
+      <p class="small">Three at a time. Change this in settings.</p>
+    </section>
+  </aside>
+</div>
+</div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="mono">ytdown 0.1.0</span>
+    <span>Engine <span class="mono">yt-dlp 2026.10.26</span>, ffmpeg found</span>
+    <span class="grow">Only download content you have the right to use.</span>
+    <span class="by">Made by Aahil Riyaz Beekay</span>
+    <a href="#">About</a>
+    <a href="#">GitHub</a>
+  </div>
+</footer>
+
+<script>
+  const p = new URLSearchParams(location.search);
+  const screen = p.get('screen') || 'empty';
+  const root = document.documentElement;
+  const setTheme = t => {
+    root.dataset.theme = t;
+    document.getElementById('themeBtn').setAttribute('aria-label', t === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
+    document.getElementById('themeIcon').innerHTML = t === 'dark'
+      ? '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2m-7.07-14.07 1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>'
+      : '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>';
+  };
+  setTheme(p.get('theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+  document.getElementById('themeBtn').onclick = () => setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark');
+  document.querySelectorAll('.screen').forEach(s => s.classList.toggle('on', s.dataset.screen === screen));
+</script>
+</body>
+</html>

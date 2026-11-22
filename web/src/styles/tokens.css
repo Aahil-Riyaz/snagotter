@@ -1,0 +1,78 @@
+/* ytdown design tokens: see ../DESIGN.md. Components use these names only.
+   Contrast checked with WCAG 2.2 formula (text ≥ 4.5:1, UI marks ≥ 3:1). */
+:root {
+  color-scheme: light;
+  --paper: #EEEDE8;
+  --surface: #F8F7F3;
+  --sunken: #E4E2DB;
+  --line: #D6D3CA;
+  --line-strong: #858074;
+  --ink: #1B1A17;
+  --ink-2: #4F4B43;
+  --ink-3: #666157;
+  --accent: #FF5B1F;        /* primary button fill */
+  --accent-hover: #F04E12;
+  --accent-mark: #D9480F;   /* thin marks: progress fill, selected bar (≥3.3:1) */
+  --on-accent: #1B1A17;
+  --accent-ink: #B8360A;    /* accent as text */
+  --accent-wash: #FF5B1F14;
+  --ok: #2C6E47;
+  --warn: #7E5500;
+  --err: #A8231B;
+  --focus: #1B1A17;
+  --scrim: rgba(27, 26, 23, .82);
+  --shadow-pop: 0 1px 0 rgba(0,0,0,.04), 0 8px 24px -8px rgba(0,0,0,.18);
+
+  --font-ui: "Schibsted Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Menlo, monospace;
+
+  --t-xs: 12px;   --lh-xs: 16px;
+  --t-sm: 13px;   --lh-sm: 18px;
+  --t-base: 15px; --lh-base: 22px;
+  --t-md: 17px;   --lh-md: 24px;
+  --t-lg: 21px;   --lh-lg: 28px;
+  --t-xl: 28px;   --lh-xl: 32px;
+  --t-2xl: 40px;  --lh-2xl: 42px;
+
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 20px; --s-6: 24px;
+  --s-8: 32px; --s-10: 40px; --s-12: 48px; --s-16: 64px;
+
+  --r-1: 3px; --r-2: 6px; --r-3: 8px;
+
+  --ease: cubic-bezier(.2, .7, .2, 1);
+  --d-fast: 120ms; --d-base: 180ms; --d-slow: 220ms;
+
+  --target: 44px;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #171715;
+  --surface: #1F1F1C;
+  --sunken: #121210;
+  --line: #2E2D29;
+  --line-strong: #75726A;
+  --ink: #ECEAE3;
+  --ink-2: #AEAAA0;
+  --ink-3: #8C887E;
+  --accent: #FF6B30;
+  --accent-hover: #FF7E4A;
+  --accent-mark: #FF6B30;
+  --on-accent: #171715;
+  --accent-ink: #FF8A57;
+  --accent-wash: #FF6B301A;
+  --ok: #6CC08D;
+  --warn: #E2B44A;
+  --err: #F07A6F;
+  --focus: #ECEAE3;
+  --scrim: rgba(18, 18, 16, .82);
+  --shadow-pop: 0 1px 0 rgba(0,0,0,.3), 0 8px 24px -8px rgba(0,0,0,.5);
+}
+
+@media (max-width: 599px) {
+  :root { --t-base: 16px; --lh-base: 24px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --d-fast: 0ms; --d-base: 0ms; --d-slow: 0ms; }
+}

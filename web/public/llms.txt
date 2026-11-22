@@ -1,0 +1,7 @@
+# ytdown
+
+> A free, local-first media downloader. Paste a link from YouTube, Instagram, TikTok, X or another site supported by yt-dlp, pick the exact format, and download it. The work runs in an engine on the user's own computer; nothing is uploaded or tracked.
+
+- The page needs the ytdown engine running locally (default http://127.0.0.1:8787).
+- API: POST /api/info {url}, POST /api/jobs, GET /api/jobs/{id}/events (SSE), GET /api/jobs/{id}/file.
+- Only download content you have the right to use.

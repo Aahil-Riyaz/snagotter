@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>ytdown</title>
+  <meta name="description" content="Paste a link, pick the exact format, download it. Free, local-first, no accounts.">
+  <meta name="theme-color" content="#EEEDE8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#171715" media="(prefers-color-scheme: dark)">
+  <meta name="color-scheme" content="light dark">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="ytdown">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <script>
+    // set theme before paint: no flash
+    try { var t = localStorage.getItem("ytdown.theme"); if (!t) t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"; document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+  <noscript>ytdown needs JavaScript.</noscript>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+</html>

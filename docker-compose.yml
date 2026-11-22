@@ -1,0 +1,14 @@
+services:
+  ytdown:
+    build: .
+    image: ytdown:latest
+    restart: unless-stopped
+    # Published on this machine only. To self-host for others, see "Hosted mode" in the README.
+    ports:
+      - "127.0.0.1:8787:8787"
+    environment:
+      YTDOWN_MODE: local
+      # Add your Vercel URL here if you use the hosted PWA with this engine:
+      # YTDOWN_ORIGINS: "https://your-app.vercel.app,http://127.0.0.1:8787,http://localhost:8787"
+    tmpfs:
+      - /tmp/ytdown:size=20g,uid=1000

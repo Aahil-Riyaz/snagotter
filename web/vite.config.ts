@@ -1,0 +1,44 @@
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import { VitePWA } from "vite-plugin-pwa";
+
+const ENGINE = process.env.YTDOWN_ENGINE ?? "http://127.0.0.1:8787";
+
+export default defineConfig({
+  plugins: [
+    react(),
+    VitePWA({
+      registerType: "autoUpdate",
+      includeAssets: ["icon.svg", "apple-touch-icon.png"],
+      manifest: {
+        name: "ytdown",
+        short_name: "ytdown",
+        description: "Paste a link, pick the exact format, download it. Runs on your own computer.",
+        id: "/",
+        start_url: "/",
+        scope: "/",
+        display: "standalone",
+        display_override: ["window-controls-overlay", "standalone"],
+        orientation: "any",
+        background_color: "#EEEDE8",
+        theme_color: "#EEEDE8",
+        categories: ["utilities", "productivity"],
+        icons: [
+          { src: "/icon-192.png", sizes: "192x192", type: "image/png" },
+          { src: "/icon-512.png", sizes: "512x512", type: "image/png" },
+          { src: "/icon-maskable-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
+          { src: "/icon.svg", sizes: "any", type: "image/svg+xml" },
+        ],
+        share_target: { action: "/", method: "GET", params: { title: "title", text: "text", url: "url" } },
+      },
+      workbox: {
+        navigateFallback: "/index.html",
+        navigateFallbackDenylist: [/^\/api\//],
+        globPatterns: ["**/*.{js,css,html,svg,png,woff2}"],
+        runtimeCaching: [],
+      },
+    }),
+  ],
+  server: { port: 5173, strictPort: true, proxy: { "/api": { target: ENGINE, changeOrigin: false } } },
+  build: { target: "es2022", sourcemap: false },
+});

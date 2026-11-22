@@ -1,0 +1,7 @@
+engine/.venv
+**/__pycache__
+web/node_modules
+web/dist
+mockups
+docs
+.git
