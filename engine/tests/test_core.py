@@ -307,3 +307,14 @@ def test_private_network_preflight_allowed_only_for_known_origins():
     bad = c.options("/api/info", headers={**hdrs, "Origin": "https://ytdown.vercel.app"})
     assert bad.status_code == 400
     assert "access-control-allow-origin" not in bad.headers
+
+
+def test_server_blocked_only_in_hosted_mode():
+    from ytdown_engine import errors
+    yt = RuntimeError("ERROR: [youtube] abc: Sign in to confirm you're not a bot. Use --cookies")
+    tt = RuntimeError("ERROR: [TikTok] 123: Unexpected response from webpage request; please report this issue")
+    assert errors.from_exception(yt)["code"] == "rate_limited"
+    assert errors.from_exception(yt, hosted=True)["code"] == "server_blocked"
+    assert errors.from_exception(tt, hosted=True)["code"] == "server_blocked"
+    assert errors.from_exception(tt)["code"] in ("unknown", "engine_outdated")
+    assert errors.from_exception(RuntimeError("HTTP Error 404: Not Found"), hosted=True)["code"] == "unavailable"

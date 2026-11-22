@@ -70,9 +70,9 @@ export function AboutDialog({ onClose }: { onClose: () => void }) {
       <div className="prose">
         <p>ytdown is a free downloader for YouTube, Instagram, TikTok, X and most other video sites. It has no accounts, ads or tracking.</p>
         <p>
-          The work happens in an engine on your own computer, built on{" "}
+          The work happens in the ytdown engine, on your own computer or on a ytdown server, built on{" "}
           <a href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noreferrer">yt-dlp</a> and{" "}
-          <a href="https://ffmpeg.org" target="_blank" rel="noreferrer">ffmpeg</a>. Links and files never pass through anyone else's server.
+          <a href="https://ffmpeg.org" target="_blank" rel="noreferrer">ffmpeg</a>. Links and files aren't kept: downloads are deleted from the engine within an hour.
           Your Recent list stays in this browser.
         </p>
         <p>Only download content you have the right to use.</p>

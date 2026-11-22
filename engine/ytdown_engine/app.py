@@ -209,7 +209,7 @@ async def api_info(body: InfoIn, request: Request):
     try:
         media = await run_in_threadpool(_extract, target)
     except (yt_dlp.utils.DownloadError, yt_dlp.utils.ExtractorError, OSError) as e:
-        raise HTTPException(422, detail=errors.from_exception(e, doctor.engine_age_days())) from e
+        raise HTTPException(422, detail=errors.from_exception(e, doctor.engine_age_days(), hosted=not settings.local)) from e
     if media.get("live_status") in ("is_live", "is_upcoming"):
         raise fail("live_in_progress", f"live_status={media['live_status']}")
     if media["kind"] == "single" and not media["video"] and not media["audio"]:

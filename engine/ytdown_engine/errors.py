@@ -23,6 +23,9 @@ CATALOG: dict[str, tuple[str, str, str | None, str | None]] = {
     "rate_limited": ("The site is asking to confirm you're not a bot.",
                      "This happens after many requests or on some networks. Wait a few minutes, or use your own browser cookies.",
                      "cookies", "Use my cookies"),
+    "server_blocked": ("This site blocks downloads from this server.",
+                       "YouTube and TikTok refuse most cloud servers. Other sites work here. For this one, run ytdown on your own computer: it's free and the README has a one-line setup.",
+                       None, None),
     "network": ("Couldn't reach the site.",
                 "Check your internet connection, then try again.",
                 "retry", "Try again"),
@@ -92,6 +95,14 @@ def to_payload(code: str, details: str | None = None) -> dict:
             "details": clean[:4000] if clean else None}
 
 
-def from_exception(exc: BaseException, engine_age_days: int | None = None) -> dict:
+_SERVER_BLOCK = re.compile(r"\[tiktok\].*unexpected response from webpage", re.I | re.S)
+
+
+def from_exception(exc: BaseException, engine_age_days: int | None = None, hosted: bool = False) -> dict:
     text = str(exc)
-    return to_payload(classify(text, engine_age_days), text)
+    code = classify(text, engine_age_days)
+    # On a cloud server, YouTube's bot check and TikTok's empty pages mean the site refuses
+    # the server's address. Waiting won't help and cookies are off, so say so plainly.
+    if hosted and (code == "rate_limited" or (code in ("unknown", "engine_outdated") and _SERVER_BLOCK.search(text))):
+        code = "server_blocked"
+    return to_payload(code, text)

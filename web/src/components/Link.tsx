@@ -91,7 +91,7 @@ export const LinkSlot = forwardRef<HTMLInputElement, Props>(function LinkSlot(
         {hint ??
           (invalid
             ? "That doesn't look like a link. Paste a full address, like youtube.com/watch?v=…"
-            : "Paste several links, one per line, to queue them. Files are fetched by the engine on your computer, and nothing is uploaded or logged.")}
+            : "Paste several links, one per line, to queue them. Nothing you paste is stored or logged.")}
       </p>
     </div>
   );

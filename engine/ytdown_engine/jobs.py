@@ -356,7 +356,7 @@ class JobManager:
             if "longer than this server allows" in text:
                 job.error = errors.to_payload("too_large", text)
             else:
-                job.error = errors.from_exception(RuntimeError(text), doctor.engine_age_days())
+                job.error = errors.from_exception(RuntimeError(text), doctor.engine_age_days(), hosted=not self.settings.local)
             self._finish(job, "failed")
 
     def _find_main(self, job: Job, info: dict) -> Path:
