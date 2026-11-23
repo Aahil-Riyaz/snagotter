@@ -16,6 +16,8 @@ services:
       YTDOWN_ORIGINS: https://${YTDOWN_DOMAIN},${YTDOWN_APP_ORIGINS:-https://snagotter.vercel.app,https://ytdown-beta.vercel.app}
       YTDOWN_TRUSTED_PROXIES: "*"   # only reachable through Caddy on the Docker network
       YTDOWN_CONCURRENCY: "2"
+      YTDOWN_TTL: "1200"                     # files nobody picks up are deleted after 20 minutes
+      YTDOWN_KEEP_AFTER_DOWNLOAD_S: "90"     # downloaded files are deleted 90 seconds later
       YTDOWN_MAX_TEMP_GB: "20"
       YTDOWN_MAX_FILESIZE_MB: "2048"
       YTDOWN_RATE_PER_MINUTE: "20"

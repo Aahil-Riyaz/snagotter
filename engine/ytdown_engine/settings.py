@@ -28,6 +28,7 @@ class Settings:
     port: int = 8787
     max_concurrent: int = 3
     ttl_seconds: int = 3600
+    keep_after_download_s: int = 90         # delete a file this long after it was downloaded
     temp_dir: str = field(default_factory=lambda: str(Path(tempfile.gettempdir()) / "ytdown"))
     max_temp_bytes: int = 20 * 1024**3
     save_dir: str = field(default_factory=lambda: str(Path.home() / "Downloads" / "SnagOtter"))
@@ -69,6 +70,7 @@ class Settings:
         s.port = int(env.get("YTDOWN_PORT", s.port))
         s.max_concurrent = max(1, min(6, int(env.get("YTDOWN_CONCURRENCY", s.max_concurrent))))
         s.ttl_seconds = int(env.get("YTDOWN_TTL", s.ttl_seconds))
+        s.keep_after_download_s = int(env.get("YTDOWN_KEEP_AFTER_DOWNLOAD_S", s.keep_after_download_s))
         s.temp_dir = env.get("YTDOWN_TEMP", s.temp_dir)
         s.max_temp_bytes = int(float(env.get("YTDOWN_MAX_TEMP_GB", s.max_temp_bytes / 1024**3)) * 1024**3)
         if env.get("YTDOWN_ORIGINS"):

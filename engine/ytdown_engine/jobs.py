@@ -560,13 +560,17 @@ class JobManager:
             self.jobs.pop(job.id, None)
 
     def _sweeper(self) -> None:
-        while not self._stop.wait(60):
+        # Files are deleted shortly after they're downloaded (a short grace period lets a dropped
+        # phone download retry, or iPhone share the file and then "Save to Files"), and anything
+        # never picked up is deleted after ttl_seconds.
+        while not self._stop.wait(20):
             now = time.time()
             ttl = self.settings.ttl_seconds
+            keep = self.settings.keep_after_download_s
             for job in list(self.jobs.values()):
                 if job.status not in TERMINAL:
                     continue
-                if (job.delivered and now - job.delivered > 300) or (job.finished and now - job.finished > ttl):
+                if (job.delivered and now - job.delivered > keep) or (job.finished and now - job.finished > ttl):
                     self._remove(job)
             known = {j.dir.name for j in self.jobs.values()}
             for d in self.root.iterdir():
