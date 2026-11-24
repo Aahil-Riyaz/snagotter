@@ -5,6 +5,7 @@ import type { Platform } from "../lib/api";
 import { cx } from "../lib/util";
 import { OTTER_SRC, SITES, SiteIcon } from "./Brand";
 import { Faq } from "./Faq";
+import { SponsorCard } from "./Sponsor";
 
 const I = { size: 22, strokeWidth: 1.75, "aria-hidden": true } as const;
 const reduced = () => typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -162,6 +163,8 @@ export function HomeSections() {
           })}
         </div>
       </section>
+
+      <SponsorCard />
 
       <section className="perks" aria-label="Why SnagOtter">
         <ul className="wrap perk-list">

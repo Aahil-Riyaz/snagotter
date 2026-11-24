@@ -4,6 +4,7 @@ import type { RecentItem } from "../lib/store";
 import { useEffect, useState } from "react";
 import { PLATFORM_NAME, bytes, cx, duration, isIOS, mimeFor, speed } from "../lib/util";
 import { ErrorBlock } from "./Feedback";
+import { SponsorLine } from "./Sponsor";
 import { MiniHeader } from "./Media";
 
 export interface JobMeta {
@@ -121,6 +122,7 @@ export function JobCard({ job, meta, local, onCancel, onAgain, onAction, autoSav
             {job.extras.includes("thumbnail") && <a className="btn btn-quiet" href={api.fileUrl(job.id, "thumbnail")}>Thumbnail</a>}
             <button className="btn btn-quiet" onClick={onAgain}>Pick another format</button>
           </div>
+          <SponsorLine />
         </div>
       )}
 

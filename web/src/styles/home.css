@@ -221,3 +221,29 @@
     @keyframes pop{from{scale:.4;opacity:0}70%{scale:1.12}to{scale:1;opacity:1}}
   }
 }
+
+/* ---------- sponsor (Casa Arabia Design) ---------- */
+.sponsor{padding-top:var(--s-4);padding-bottom:var(--s-4)}
+.sponsor-card{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:var(--s-5);padding:var(--s-5) var(--s-6);border-radius:var(--r-3);
+  background:linear-gradient(120deg,color-mix(in srgb,#C9A227 10%,var(--surface)) 0%,var(--surface) 60%);border:1px solid color-mix(in srgb,#C9A227 35%,var(--line));
+  color:var(--ink);text-decoration:none;transition:transform var(--d-slow) var(--ease-out),box-shadow var(--d-slow) var(--ease)}
+.sponsor-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-pop)}
+.sponsor-card:active{transform:translateY(-1px) scale(.99)}
+.sponsor-logo{width:67px;height:64px;object-fit:contain;filter:drop-shadow(0 6px 10px rgba(90,60,0,.28))}
+.sponsor-text{display:flex;flex-direction:column;gap:2px;min-width:0}
+.sponsor-text b{font-size:var(--t-md);line-height:var(--lh-md);font-weight:800;letter-spacing:-.01em}
+.sponsor-text span{color:var(--ink-2);font-size:var(--t-sm);line-height:var(--lh-sm)}
+.sponsor-follow{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 var(--s-5);border-radius:var(--r-pill);font-weight:700;font-size:var(--t-sm);white-space:nowrap;color:#fff;
+  background:linear-gradient(45deg,#F58529,#DD2A7B 45%,#8134AF 75%,#515BD4)}
+.sponsor-card:hover .sponsor-follow{filter:brightness(1.06)}
+.sponsor-line{display:flex;align-items:center;gap:10px;margin-top:var(--s-5);padding-top:var(--s-4);border-top:1px solid var(--line);color:var(--ink-2);font-size:var(--t-sm);text-decoration:none}
+.sponsor-line img{width:29px;height:28px;object-fit:contain}
+.sponsor-line b{color:var(--ink);font-weight:700}
+.sponsor-line-cta{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-weight:700;color:#DD2A7B}
+:root[data-theme="dark"] .sponsor-line-cta{color:#F77FB6}
+.sponsor-line:hover b{text-decoration:underline;text-underline-offset:3px}
+@media (max-width:599px){
+  .sponsor-card{grid-template-columns:auto 1fr;gap:var(--s-3) var(--s-4);padding:var(--s-4)}
+  .sponsor-logo{width:54px;height:52px}
+  .sponsor-follow{grid-column:1 / -1;justify-content:center;min-height:48px}
+}
