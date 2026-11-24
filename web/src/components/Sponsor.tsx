@@ -2,7 +2,7 @@ import { siInstagram } from "simple-icons";
 
 /** SnagOtter's sponsor. One place to change it. */
 export const SPONSOR = {
-  name: "Casa Arabia Design",
+  name: "Casa Arabia Design Studio",
   what: "Luxury interiors, wallpaper and fabrics in Bahrain.",
   url: "https://www.instagram.com/casa_arabia_design/",
   logo: "/brand/casa-arabia-crest.webp",
