@@ -129,6 +129,8 @@ export function HomeSections() {
   const ref = useReveal();
   return (
     <div className="home" ref={ref}>
+      <SponsorCard />
+
       <section className="wrap demo" aria-labelledby="demo-h">
         <div className="demo-copy reveal">
           <h2 id="demo-h">Three taps. That's it.</h2>
@@ -145,8 +147,6 @@ export function HomeSections() {
           <DemoVideo />
         </figure>
       </section>
-
-      <SponsorCard />
 
       <section className="wrap sites" aria-labelledby="sites-h">
         <h2 id="sites-h" className="reveal">Works where your videos are</h2>
