@@ -146,6 +146,8 @@ export function HomeSections() {
         </figure>
       </section>
 
+      <SponsorCard />
+
       <section className="wrap sites" aria-labelledby="sites-h">
         <h2 id="sites-h" className="reveal">Works where your videos are</h2>
         <div className="bento">
@@ -163,8 +165,6 @@ export function HomeSections() {
           })}
         </div>
       </section>
-
-      <SponsorCard />
 
       <section className="perks" aria-label="Why SnagOtter">
         <ul className="wrap perk-list">
