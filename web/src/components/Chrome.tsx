@@ -21,9 +21,11 @@ export function TopBar({ doctor, offline, onSettings }: { doctor: Doctor | null;
           <span className="txt" aria-hidden="true">{text}</span>
           {doctor && <span className="mono txt ver" aria-hidden="true">{doctor.engine.version}</span>}
         </div>
-        <button className="iconbtn" onClick={onSettings} aria-label="Settings">
-          <Settings {...I} />
-        </button>
+        {offline && (
+          <button className="iconbtn" onClick={onSettings} aria-label="Settings">
+            <Settings {...I} />
+          </button>
+        )}
         <button
           className="iconbtn"
           aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
